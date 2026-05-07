@@ -20,13 +20,13 @@ public class PlayerMover : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     /// <summary>
@@ -94,15 +94,15 @@ public class PlayerMover : MonoBehaviour
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
-
     
-    // 不具合がある。
     // 地面との接地判定
     private bool IsGrounding()
     {
-        float rayLength = 0.6f;
+        float rayLength = 1.0f;
+
         Vector2 direction = transform.right * 0.9f;
-        Vector2 startPos = transform.position + new Vector3(-0.4f, -1.05f, 0);
+        Vector2 startPos = transform.position + new Vector3(-rayLength / 2, -this.transform.localScale.y / 2 - 0.1f, 0);
+
 
         RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
         Debug.DrawRay(startPos, direction, Color.red);
@@ -118,13 +118,15 @@ public class PlayerMover : MonoBehaviour
         //rb2D.velocity = Vector2.zero; // テレポート後の慣性をリセット
     }
 
-    // 打ち上げ
-    public void Launch(Vector2 force)
-    {
-        // 一旦速度リセット（不要なら削除可）
-        rb2D.linearVelocity = Vector2.zero;
+    /*
+        // 打ち上げ
+        public void Launch(Vector2 force)
+        {
+            // 一旦速度リセット（不要なら削除可）
+            rb2D.linev arVelocity = Vector2.zero;
 
-        // 力を加える
-        rb2D.AddForce(force, ForceMode2D.Impulse);
-    }
+            // 力を加える
+            rb2D.AddForce(force, ForceMode2D.Impulse);
+        }
+    */
 }
