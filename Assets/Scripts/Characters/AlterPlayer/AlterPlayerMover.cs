@@ -11,20 +11,20 @@ public class AlterPlayerMover : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     // true=分離されたのでDynamicに、false=同期しているのでtransformに
-    public void SetState(bool isSeparated) 
+    public void SetState(bool isSeparated)
     {
-        if (isSeparated == true) 
-        { 
+        if (isSeparated == true)
+        {
             UnFreeze();
         }
         else
@@ -36,28 +36,6 @@ public class AlterPlayerMover : MonoBehaviour
     // 惰性で移動
     public async UniTaskVoid InertialMovement(Vector2 direction, float speed, float duration, CancellationToken token)
     {
-        /*
-        if (direction.x > 0)
-        {
-            rb2D.velocity = Vector2.right * speed;
-        }
-        else if (direction.x < 0)
-        {
-            rb2D.velocity = Vector2.left * speed;
-        }
-        // rb2D.velocity = direction * speed;
-
-        try
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(duration), cancellationToken: token);
-        }
-        catch (OperationCanceledException)
-        {
-            // キャンセル時はここに来る（エラーにはならない）
-        }
-
-        rb2D.velocity = Vector2.zero;
-        */
         // 慣性移動開始
         float timer = duration;
         while (timer > 0f && !token.IsCancellationRequested)

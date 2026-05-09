@@ -22,13 +22,14 @@ public class Player : MonoBehaviour
     // 新生クールタイム
     [SerializeField] float teleportationCoolTime = 1.0f;
     public float TeleportationCoolTime => teleportationCoolTime;
-    // 
     public float UseTeleportationTimer { get; private set; }
     // 解放クールタイム
     [SerializeField] float separationCoolTime = 6.0f;
     public float SeparationCoolTime => separationCoolTime;
-    // 
     public float UseSeparationTimer { get; private set; }
+
+    // 操作可能か
+    private bool isOperable = true;
 
 
     // Start is called before the first frame update
@@ -40,10 +41,19 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 移動関連の呼び出し
+        if (isOperable == true)
+        {
+            PlayerControl();
+        }
+    }
+
+    // 移動関連の呼び出し
+    public void PlayerControl()
+    {
         // 左右移動
         Vector2 moveInput = playerInputReader.MoveInput;
         playerMover.Move(moveInput);
+
         // ジャンプ
         if (playerInputReader.JumpPressed)
         {
@@ -53,13 +63,11 @@ public class Player : MonoBehaviour
         // 新生
         if (playerInputReader.TeleportationPressed)
         {
-            //playerMover.Teleportation();
             TeleportationAsync(this.GetCancellationTokenOnDestroy()).Forget();
         }
         // 解放
         if (playerInputReader.SeparationPressed)
         {
-            //playerMover.Separation();
             SeparationAsync(moveInput, this.GetCancellationTokenOnDestroy()).Forget();
         }
     }
