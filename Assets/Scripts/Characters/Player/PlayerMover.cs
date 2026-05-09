@@ -94,16 +94,16 @@ public class PlayerMover : MonoBehaviour
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
-    
+
     // 地面との接地判定
     private bool IsGrounding()
     {
-        float rayLength = 1.0f;
+        float rayLength = this.transform.localScale.x * 1.0f;
 
         Vector2 direction = transform.right * 0.9f;
         Vector2 startPos = transform.position + new Vector3(-rayLength / 2, -this.transform.localScale.y / 2 - 0.1f, 0);
 
-
+        // デバッグ表示
         RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
         Debug.DrawRay(startPos, direction, Color.red);
 

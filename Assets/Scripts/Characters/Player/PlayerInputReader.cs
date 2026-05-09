@@ -16,11 +16,15 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction teleportationAction;
+    private InputAction separationAction;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         moveAction = InputSystem.actions["Move"];
         jumpAction = InputSystem.actions["Jump"];
+        teleportationAction = InputSystem.actions["Teleportation"];
+        separationAction = InputSystem.actions["Separation"];
     }
 
     // Update is called once per frame
@@ -61,7 +65,23 @@ public class PlayerInputReader : MonoBehaviour
         }
 
         // 新生
+        if (teleportationAction != null)
+        {
+            TeleportationPressed = teleportationAction.triggered;
+        }
+        else
+        {
+            TeleportationPressed = false;
+        }
 
         // 解放
+        if (separationAction != null)
+        {
+            SeparationPressed = separationAction.triggered;
+        }
+        else
+        {
+            SeparationPressed = false;
+        }
     }
 }
