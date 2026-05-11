@@ -486,7 +486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AlterPlayer
   playerMoverHistory: {fileID: 962584926}
   alterPlayerMover: {fileID: 388785404}
-  syncDelaySeconds: 1
+  syncDelaySeconds: 0.5
   separationDuration: 5
 --- !u!1 &782669691
 GameObject:
@@ -773,12 +773,15 @@ GameObject:
   - component: {fileID: 962584917}
   - component: {fileID: 962584924}
   - component: {fileID: 962584925}
+  - component: {fileID: 962584927}
   - component: {fileID: 962584919}
   - component: {fileID: 962584923}
   - component: {fileID: 962584922}
   - component: {fileID: 962584921}
   - component: {fileID: 962584920}
   - component: {fileID: 962584926}
+  - component: {fileID: 962584929}
+  - component: {fileID: 962584928}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -835,7 +838,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5a005bd3ce69e9f44b06e4db7fbabd08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -875,10 +878,8 @@ MonoBehaviour:
   playerMover: {fileID: 962584922}
   playerInputReader: {fileID: 962584923}
   playerMoverHistory: {fileID: 962584926}
-  alterPlayer: {fileID: 388785405}
-  alterPlayerTransform: {fileID: 388785400}
-  teleportationCoolTime: 1
-  separationCoolTime: 6
+  teleportation: {fileID: 962584929}
+  separation: {fileID: 962584928}
 --- !u!114 &962584920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891,6 +892,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0579949925b7a8f4880f0e8a8c2fd192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  animator: {fileID: 962584927}
+  playerMover: {fileID: 962584922}
 --- !u!114 &962584921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1019,6 +1022,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoverHistory
   frameDelay: 60
+--- !u!95 &962584927
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962584916}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 21468bd2cdd04e04a994384f5ee3ceb9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &962584928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962584916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99506459c456a7d4d8cbcd0fc68361d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSeparation
+  coolTime: 6
+  alterPlayer: {fileID: 388785405}
+  playerMoverHistory: {fileID: 962584926}
+--- !u!114 &962584929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962584916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aac605b66ef8604898cfd74548d4ee7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTeleportation
+  coolTime: 1
+  playerMover: {fileID: 962584922}
+  playerMoverHistory: {fileID: 962584926}
+  alterPlayerTransform: {fileID: 388785400}
 --- !u!1 &1072309242
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,6 +17,14 @@ public class PlayerMover : MonoBehaviour
     private bool isLookRight;
     public bool IsLookRight => isLookRight;
 
+    // 移動中か(run)
+    private bool isMoving;
+    public bool IsMoving => isMoving;
+
+    // ジャンプ中か(jump)
+    private bool isJumping;
+    public bool IsJumping => isJumping;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,7 +34,11 @@ public class PlayerMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        // ジャンプ中かつ、落下中または静止しており、地面に接地した瞬間にフラグを解除
+        if (isJumping && rb2D.linearVelocity.y <= 0.01f && IsGrounding())
+        {
+            isJumping = false;
+        }
     }
 
     /// <summary>
@@ -38,7 +50,9 @@ public class PlayerMover : MonoBehaviour
         moveDirection = input * moveSpeed;
         float moveX = moveDirection.x;
 
-        if (moveDirection.magnitude > 0.1f) // 入力が一定以上の場合のみ更新
+        isMoving = moveDirection.magnitude > 0.1f; // 移動中かどうかを更新
+
+        if (isMoving) // 入力が一定以上の場合のみ更新
         {
             moveDirection.Normalize(); // 斜め移動を一定速度にするために正規化
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90; // 回転角度を計算
@@ -92,6 +106,7 @@ public class PlayerMover : MonoBehaviour
         {
             // 通常ジャンプ
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isJumping = true;
         }
     }
 

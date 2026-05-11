@@ -2,7 +2,6 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using Unity.VisualScripting;
-using UnityEngine.SceneManagement;
 
 
 public class Player : MonoBehaviour
@@ -11,22 +10,14 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerInputReader playerInputReader;
     [SerializeField] PlayerMoverHistory playerMoverHistory;
 
-    [SerializeField] AlterPlayer alterPlayer;
-    [SerializeField] Transform alterPlayerTransform;
+    [Header("Abilities")]
+    [SerializeField] PlayerTeleportation teleportation;
+    [SerializeField] PlayerSeparation separation;
 
-    // 新生
-    //public bool TeleportationPressed { get; private set; }
-    // 解放
-    //public bool SeparationPressed { get; private set; }
-
-    // 新生クールタイム
-    [SerializeField] float teleportationCoolTime = 1.0f;
-    public float TeleportationCoolTime => teleportationCoolTime;
-    public float UseTeleportationTimer { get; private set; }
-    // 解放クールタイム
-    [SerializeField] float separationCoolTime = 6.0f;
-    public float SeparationCoolTime => separationCoolTime;
-    public float UseSeparationTimer { get; private set; }
+    public float TeleportationCoolTime => teleportation.CoolTime;
+    public float UseTeleportationTimer => teleportation.CurrentTimer;
+    public float SeparationCoolTime => separation.CoolTime;
+    public float UseSeparationTimer => separation.CurrentTimer;
 
     // 操作可能か
     private bool isOperable = true;
@@ -63,63 +54,12 @@ public class Player : MonoBehaviour
         // 新生
         if (playerInputReader.TeleportationPressed)
         {
-            TeleportationAsync(this.GetCancellationTokenOnDestroy()).Forget();
+            teleportation.Execute();
         }
         // 解放
         if (playerInputReader.SeparationPressed)
         {
-            SeparationAsync(moveInput, this.GetCancellationTokenOnDestroy()).Forget();
+            separation.Execute(moveInput);
         }
-    }
-
-    // 新生？※壁抜け対策を行うこと
-    private async UniTaskVoid TeleportationAsync(CancellationToken token)
-    {
-        Debug.Log("Teleportation");
-        UseTeleportationTimer = teleportationCoolTime;
-
-        // 処理
-        // 移動
-        playerMover.SetPositionAndRotation(alterPlayerTransform.position, alterPlayerTransform.rotation);
-        // 履歴をリセット
-        playerMoverHistory.ClearData();
-
-        // カウントダウン
-        while (UseTeleportationTimer > 0)
-        {
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
-            if (token.IsCancellationRequested) return;
-
-            UseTeleportationTimer -= Time.deltaTime;
-        }
-
-        UseTeleportationTimer = 0;
-    }
-
-    // 解放？※壁抜け対策を行うこと
-    private async UniTaskVoid SeparationAsync(Vector2 moveDirection, CancellationToken token)
-    {
-        Debug.Log("Separation");
-        UseSeparationTimer = separationCoolTime;
-
-        // 処理
-        // 呼び出し
-        alterPlayer.Separation(moveDirection);
-
-        // カウントダウン
-        while (UseSeparationTimer > 0)
-        {
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
-            if (token.IsCancellationRequested) return;
-
-            UseSeparationTimer -= Time.deltaTime;
-        }
-
-        // alterPlayerの場所を自身の場所に移動させること
-        // 履歴をリセット
-        playerMoverHistory.ClearData();
-
-        // 終了
-        UseSeparationTimer = 0;
     }
 }
