@@ -10,6 +10,7 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
 
     [SerializeField] Rigidbody2D rb2D;
+    [SerializeField] BoxCollider2D boxCollider;
 
     // 移動ベクトル
     private Vector2 moveDirection;
@@ -39,6 +40,8 @@ public class PlayerMover : MonoBehaviour
         {
             isJumping = false;
         }
+
+        IsGrounding();
     }
 
     /// <summary>
@@ -113,6 +116,8 @@ public class PlayerMover : MonoBehaviour
     // 地面との接地判定
     private bool IsGrounding()
     {
+        // 消さないこと
+        /*
         float rayLength = this.transform.localScale.x * 1.0f;
 
         Vector2 direction = transform.right * 0.9f;
@@ -121,6 +126,51 @@ public class PlayerMover : MonoBehaviour
         // デバッグ表示
         RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
         Debug.DrawRay(startPos, direction, Color.red);
+
+        return hit.collider != null;
+        */
+
+        /*
+        if (boxCollider == null)
+        {
+            // Colliderが見つからない場合は、安全のためfalseを返す
+            return false;
+        }
+
+        // Colliderの境界情報を取得
+        Bounds bounds = boxCollider.bounds;
+
+        // レイキャストの原点: コライダーの下端中央
+        // bounds.center.x はコライダーの中心X座標
+        // bounds.min.y はコライダーの下端Y座標
+        Vector2 rayOrigin = new Vector2(bounds.center.x, bounds.min.y);
+
+        // レイキャストの方向: 真下
+        Vector2 rayDirection = Vector2.down;
+
+        // レイキャストの長さ: コライダーの境界からわずかに下へ伸ばす
+        // 例えば、0.05f 程度の短い距離で十分
+        float rayLength = 0.05f; // 地面とのわずかな隙間を検出するための長さ
+
+        // デバッグ表示 (Sceneビューで確認できる)
+        Debug.DrawRay(rayOrigin, rayDirection * rayLength, Color.green);
+
+        // レイキャストを実行
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, rayLength, groundLayer);
+
+        // ヒットしたコライダーがあれば接地していると判断
+        return hit.collider != null;
+        */
+        Vector2 thisSize = new Vector2(Mathf.Abs(this.transform.localScale.x), Mathf.Abs(this.transform.localScale.y));
+        float sizeRate = 0.9f;
+        float rayLength = boxCollider.size.x * thisSize.x;
+
+        Vector2 direction = transform.right * thisSize.x * sizeRate;
+        Vector2 startPos = transform.position + new Vector3(((1 - sizeRate) * thisSize.x - rayLength) / 2, -boxCollider.size.y * thisSize.y / 2 - 0.1f, 0);
+
+        // デバッグ表示
+        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
+        Debug.DrawRay(startPos, direction, Color.orangeRed);
 
         return hit.collider != null;
     }

@@ -5,6 +5,7 @@ public class AlterPlayer : MonoBehaviour
 {
     [SerializeField] private PlayerMoverHistory playerMoverHistory;
     [SerializeField] private AlterPlayerMover alterPlayerMover;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     // 状態(分離されているか)
     bool isSeparated = false;
@@ -17,14 +18,14 @@ public class AlterPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         // プレイヤーの動きと同期
-        if (isSeparated == false) 
+        if (isSeparated == false)
         {
             SynchronizePlayer();
         }
@@ -34,10 +35,12 @@ public class AlterPlayer : MonoBehaviour
     public void SynchronizePlayer()
     {
         // nフレーム前のデータを取得し状態を適用
-        if (playerMoverHistory.TryGetPastFrameData((int)(60 * syncDelaySeconds), out var pastData)) 
+        if (playerMoverHistory.TryGetPastFrameData((int)(60 * syncDelaySeconds), out var pastData))
         {
             transform.position = pastData.position;
             transform.rotation = pastData.rotation;
+            transform.localScale = pastData.scale;
+            spriteRenderer.sprite = pastData.sprite;
         }
     }
 

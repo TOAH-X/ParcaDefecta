@@ -5,6 +5,7 @@ public class PlayerMoverHistory : MonoBehaviour
 {
     // 履歴用のフレーム数（60fpsなら60フレーム）
     [SerializeField] private int frameDelay = 60;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     // 過去フレームの履歴
     private Queue<PlayerFrameData> FrameHistory;
 
@@ -17,7 +18,7 @@ public class PlayerMoverHistory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void LateUpdate()
@@ -26,7 +27,9 @@ public class PlayerMoverHistory : MonoBehaviour
         PlayerFrameData frameData = new PlayerFrameData
         {
             position = transform.position,
-            rotation = transform.rotation
+            rotation = transform.rotation,
+            scale = transform.localScale,
+            sprite = spriteRenderer.sprite
         };
 
         FrameHistory.Enqueue(frameData);
@@ -70,5 +73,7 @@ public class PlayerMoverHistory : MonoBehaviour
     {
         public Vector3 position;
         public Quaternion rotation;
+        public Vector3 scale;
+        public Sprite sprite;
     }
 }
