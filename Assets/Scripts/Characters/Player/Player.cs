@@ -1,11 +1,10 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System.Threading;
-using Unity.VisualScripting;
 
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; }
+
     [SerializeField] PlayerMover playerMover;
     [SerializeField] PlayerInputReader playerInputReader;
     [SerializeField] PlayerMoverHistory playerMoverHistory;
@@ -14,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerTeleportation teleportation;
     [SerializeField] PlayerSeparation separation;
 
+    // クールタイム
     public float TeleportationCoolTime => teleportation.CoolTime;
     public float UseTeleportationTimer => teleportation.CurrentTimer;
     public float SeparationCoolTime => separation.CoolTime;
@@ -23,10 +23,17 @@ public class Player : MonoBehaviour
     private bool isOperable = true;
 
 
-    // Start is called before the first frame update
-    void Start()
+    // シングルトンの初期化はAwakeで行うのが最も安全です
+    void Awake()
     {
-
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -61,5 +68,19 @@ public class Player : MonoBehaviour
         {
             separation.Execute(moveInput);
         }
+    }
+
+    // UIボタンの OnClick 等から呼び出すためのメソッド
+    public void OnTeleportationButtonClick()
+    {
+        if (!isOperable) return;
+        teleportation.Execute();
+    }
+
+    public void OnSeparationButtonClick()
+    {
+        if (!isOperable) return;
+        // 現在の入力値を渡して実行
+        separation.Execute(playerInputReader.MoveInput);
     }
 }

@@ -29,6 +29,8 @@ public class AlterPlayer : MonoBehaviour
         {
             SynchronizePlayer();
         }
+
+        UpdateVisibility();
     }
 
     // 追従※AlterPlayerMoveに移動すること
@@ -42,6 +44,21 @@ public class AlterPlayer : MonoBehaviour
             transform.localScale = pastData.scale;
             spriteRenderer.sprite = pastData.sprite;
         }
+    }
+
+    /// <summary>
+    /// プレイヤーと重なっているか判定して表示/非表示を切り替える
+    /// </summary>
+    private void UpdateVisibility()
+    {
+        if (Player.Instance == null) return;
+
+        // プレイヤーとの距離を計算
+        float distance = Vector3.Distance(transform.position, Player.Instance.transform.position);
+
+        // 重なっているとみなすしきい値
+        // 同期中は少しのズレでも見えるように小さめに、分離中はテレポート直後の重なりを消す程度に判定
+        spriteRenderer.enabled = distance > 0.05f;
     }
 
     // 解放？※壁抜け対策を行うこと

@@ -8,6 +8,8 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] float jumpForce = 12.0f;
     [Header("LayerのGround")]
     [SerializeField] LayerMask groundLayer;
+    [Header("コヨーテタイム (秒)")]
+    [SerializeField] float coyoteTime = 0.1f;
 
     [SerializeField] Rigidbody2D rb2D;
     [SerializeField] BoxCollider2D boxCollider;
@@ -26,6 +28,9 @@ public class PlayerMover : MonoBehaviour
     private bool isJumping;
     public bool IsJumping => isJumping;
 
+    // コヨーテタイム用のカウンター
+    private float coyoteCounter;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -35,13 +40,21 @@ public class PlayerMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // ジャンプ中かつ、落下中または静止しており、地面に接地した瞬間にフラグを解除
-        if (isJumping && rb2D.linearVelocity.y <= 0.01f && IsGrounding())
-        {
-            isJumping = false;
-        }
+        bool grounded = IsGrounding();
 
-        IsGrounding();
+        if (grounded)
+        {
+            coyoteCounter = coyoteTime; // 接地中は常にタイマーを満タンにする
+            // ジャンプ中かつ、落下中または静止しており、地面に接地した瞬間にフラグを解除
+            if (isJumping && rb2D.linearVelocity.y <= 0.01f)
+            {
+                isJumping = false;
+            }
+        }
+        else
+        {
+            coyoteCounter -= Time.deltaTime; // 空中にいる間はカウントダウン
+        }
     }
 
     /// <summary>
@@ -104,63 +117,25 @@ public class PlayerMover : MonoBehaviour
     // ジャンプ処理
     public void Jump()
     {
-        //Rayの判定(地上にいるとき)
-        if (IsGrounding() == true && rb2D.linearVelocity.y == 0)
+        // コヨーテタイム内（coyoteCounter > 0）かつ、すでにジャンプ中でない場合
+        if (coyoteCounter > 0f && !isJumping)
         {
+            // 崖から歩いて落ちている最中のコヨーテジャンプを安定させるため、垂直速度をリセット
+            if (rb2D.linearVelocity.y < 0)
+            {
+                rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 0);
+            }
+
             // 通常ジャンプ
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isJumping = true;
+            coyoteCounter = 0f; // 二重ジャンプ防止のためにカウンターをゼロにする
         }
     }
 
     // 地面との接地判定
     private bool IsGrounding()
     {
-        // 消さないこと
-        /*
-        float rayLength = this.transform.localScale.x * 1.0f;
-
-        Vector2 direction = transform.right * 0.9f;
-        Vector2 startPos = transform.position + new Vector3(-rayLength / 2, -this.transform.localScale.y / 2 - 0.1f, 0);
-
-        // デバッグ表示
-        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
-        Debug.DrawRay(startPos, direction, Color.red);
-
-        return hit.collider != null;
-        */
-
-        /*
-        if (boxCollider == null)
-        {
-            // Colliderが見つからない場合は、安全のためfalseを返す
-            return false;
-        }
-
-        // Colliderの境界情報を取得
-        Bounds bounds = boxCollider.bounds;
-
-        // レイキャストの原点: コライダーの下端中央
-        // bounds.center.x はコライダーの中心X座標
-        // bounds.min.y はコライダーの下端Y座標
-        Vector2 rayOrigin = new Vector2(bounds.center.x, bounds.min.y);
-
-        // レイキャストの方向: 真下
-        Vector2 rayDirection = Vector2.down;
-
-        // レイキャストの長さ: コライダーの境界からわずかに下へ伸ばす
-        // 例えば、0.05f 程度の短い距離で十分
-        float rayLength = 0.05f; // 地面とのわずかな隙間を検出するための長さ
-
-        // デバッグ表示 (Sceneビューで確認できる)
-        Debug.DrawRay(rayOrigin, rayDirection * rayLength, Color.green);
-
-        // レイキャストを実行
-        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, rayLength, groundLayer);
-
-        // ヒットしたコライダーがあれば接地していると判断
-        return hit.collider != null;
-        */
         Vector2 thisSize = new Vector2(Mathf.Abs(this.transform.localScale.x), Mathf.Abs(this.transform.localScale.y));
         float sizeRate = 0.9f;
         float rayLength = boxCollider.size.x * thisSize.x;
