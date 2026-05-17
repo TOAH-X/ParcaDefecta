@@ -3,7 +3,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
 
-public class AlterPlayerMover : MonoBehaviour
+public class AlterPlayerMover : MonoBehaviour, ILaunchable
 {
     [SerializeField] private Rigidbody2D rb2D;
     [SerializeField] private BoxCollider2D boxCollider2D;
@@ -40,18 +40,12 @@ public class AlterPlayerMover : MonoBehaviour
         float timer = duration;
         while (timer > 0f && !token.IsCancellationRequested)
         {
-            //rb2D.AddForce(direction.normalized * speed, ForceMode2D.Force);
-            if (direction.x > 0)
-            {
-                rb2D.linearVelocity = new Vector2(Vector2.right.x * speed, rb2D.linearVelocity.y);
-            }
-            else if (direction.x < 0)
-            {
-                rb2D.linearVelocity = new Vector2(Vector2.left.x * speed, rb2D.linearVelocity.y);
-            }
+            // 将来的にここでポーズ待機を差し込む
+
+            // 方向ベクトルを考慮した一貫性のある速度適用
+            rb2D.linearVelocity = new Vector2(direction.normalized.x * speed, rb2D.linearVelocity.y);
 
             timer -= Time.fixedDeltaTime;
-
             await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
         }
     }
@@ -70,13 +64,12 @@ public class AlterPlayerMover : MonoBehaviour
         boxCollider2D.enabled = true;
     }
 
-    // 打ち上げ
-    public void Launch(Vector2 force)
+    /// <summary>
+    /// 外部ギミックによる打ち上げ処理
+    /// </summary>
+    public void Launch(float force)
     {
-        // 一旦速度リセット（不要なら削除可）
-        rb2D.linearVelocity = Vector2.zero;
-
-        // 力を加える
-        rb2D.AddForce(force, ForceMode2D.Impulse);
+        // 垂直速度を直接上書きして打ち上げる
+        rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, force);
     }
 }

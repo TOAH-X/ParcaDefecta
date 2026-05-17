@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMover : MonoBehaviour
+public class PlayerMover : MonoBehaviour, ILaunchable
 {
     [Header("移動速度")]
     [SerializeField] float moveSpeed = 7.5f;
@@ -40,6 +40,15 @@ public class PlayerMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 将来的にここに if (IsPaused) return; を入れるだけで済むように
+        PerformUpdate();
+    }
+
+    /// <summary>
+    /// 毎フレームの内部状態更新（接地判定やタイマーなど）
+    /// </summary>
+    private void PerformUpdate()
+    {
         bool grounded = IsGrounding();
 
         if (grounded)
@@ -66,14 +75,22 @@ public class PlayerMover : MonoBehaviour
         moveDirection = input * moveSpeed;
         float moveX = moveDirection.x;
 
-        isMoving = moveDirection.magnitude > 0.1f; // 移動中かどうかを更新
 
+        //isMoving = moveDirection.magnitude > 0.1f; // 移動中かどうかを更新
+        isMoving = input.magnitude > 0.1f;
+
+        /*
         if (isMoving) // 入力が一定以上の場合のみ更新
         {
             moveDirection.Normalize(); // 斜め移動を一定速度にするために正規化
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90; // 回転角度を計算
             transform.Translate(moveSpeed * Time.deltaTime * moveDirection, Space.World); // 移動方向に沿って移動
         }
+        */
+        // 物理演算(Rigidbody)に基づいた水平移動
+        // transform.Translate ではなく速度を上書きすることで、ポーズ時の停止を確実にする
+        rb2D.linearVelocity = new Vector2(input.x * moveSpeed, rb2D.linearVelocity.y);
+
         // 向きの変更
         if (moveX > 0)
         {
@@ -158,15 +175,17 @@ public class PlayerMover : MonoBehaviour
         //rb2D.velocity = Vector2.zero; // テレポート後の慣性をリセット
     }
 
-    /*
-        // 打ち上げ
-        public void Launch(Vector2 force)
-        {
-            // 一旦速度リセット（不要なら削除可）
-            rb2D.linev arVelocity = Vector2.zero;
+    /// <summary>
+    /// 外部ギミックによる打ち上げ処理
+    /// </summary>
+    public void Launch(float verticalForce)
+    {
+        // 垂直速度を直接上書き（ジャンプ力との重複を防ぐ）
+        rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, verticalForce);
 
-            // 力を加える
-            rb2D.AddForce(force, ForceMode2D.Impulse);
-        }
-    */
+        // ジャンプ状態としてマークし、コヨーテタイムを終了させることで
+        // 同じフレーム内でのジャンプ入力の重複適用を防ぐ
+        isJumping = true;
+        coyoteCounter = 0f;
+    }
 }

@@ -86,10 +86,4 @@ public class AlterPlayer : MonoBehaviour
         // 重力・当たり判定の適用を外す
         alterPlayerMover.SetState(isSeparated);
     }
-
-    // ILaunchable 実装
-    public void Launch(Vector2 force)
-    {
-        alterPlayerMover.Launch(force);
-    }
 }

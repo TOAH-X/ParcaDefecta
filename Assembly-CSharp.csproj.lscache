@@ -66,9 +66,11 @@ Assets/Scripts/Characters/Player/
  PlayerSeparation.cs
  PlayerStats.cs
  PlayerTeleportation.cs
-Assets/Scripts/System/
- FPS/FPSManager.cs
- Singleton/Singleton.cs
+Assets/Scripts/
+ Stages/Gimmick/JumpBlock/JumpBlock.cs
+ System/
+  FPS/FPSManager.cs
+  Singleton/Singleton.cs
 Assets/TextMesh Pro/Examples & Extras/Scripts/
  Benchmark01.cs
  Benchmark01_UGUI.cs
