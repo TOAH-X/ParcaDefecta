@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using R3;
+using ParcaDefecta.System;
 
 public class Player : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // ポーズ中は入力を受け付けない
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         if (isOperable == true)
         {
             PlayerControl();

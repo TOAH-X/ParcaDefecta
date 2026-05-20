@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using ParcaDefecta.System;
 
 public class PlayerMoverHistory : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class PlayerMoverHistory : MonoBehaviour
 
     void LateUpdate()
     {
+        // ポーズ中は履歴を記録しない
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         // 今フレームのデータを記録
         PlayerFrameData frameData = new PlayerFrameData
         {

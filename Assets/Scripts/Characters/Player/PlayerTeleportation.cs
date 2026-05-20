@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using ParcaDefecta.System;
 
 public class PlayerTeleportation : MonoBehaviour
 {
@@ -33,7 +34,9 @@ public class PlayerTeleportation : MonoBehaviour
         {
             await UniTask.Yield(PlayerLoopTiming.Update, token);
             if (token.IsCancellationRequested) return;
-            CurrentTimer -= Time.deltaTime;
+
+            float dt = TimeManager.Instance != null ? TimeManager.Instance.DeltaTime : Time.deltaTime;
+            CurrentTimer -= dt;
         }
 
         CurrentTimer = 0;

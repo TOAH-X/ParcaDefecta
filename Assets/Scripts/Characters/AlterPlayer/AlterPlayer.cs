@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using ParcaDefecta.System;
 
 public class AlterPlayer : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class AlterPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // ポーズ中は同期処理を停止
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         // プレイヤーの動きと同期
         if (isSeparated == false)
         {
@@ -79,7 +83,10 @@ public class AlterPlayer : MonoBehaviour
     // 解放状態を戻す
     private async UniTaskVoid ResetSeparationAsync(float delay)
     {
-        await UniTask.Delay(System.TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
+        if (TimeManager.Instance != null)
+            await TimeManager.Instance.WaitSecondsAsync(delay, this.GetCancellationTokenOnDestroy());
+        else
+            await UniTask.Delay(System.TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
 
         // 分離状態を戻す
         isSeparated = false;

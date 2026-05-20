@@ -1,4 +1,6 @@
 using UnityEngine;
+using R3;
+using ParcaDefecta.System;
 
 public class PlayerMover : MonoBehaviour, ILaunchable
 {
@@ -34,20 +36,18 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (TimeManager.Instance == null) return;
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // 将来的にここに if (IsPaused) return; を入れるだけで済むように
-        PerformUpdate();
+        // TimeManagerのOnTickを購読して、ポーズ状態を反映した更新を行う
+        TimeManager.Instance.OnTick
+            .Subscribe(dt => PerformUpdate(dt))
+            .AddTo(this);
     }
 
     /// <summary>
     /// 毎フレームの内部状態更新（接地判定やタイマーなど）
     /// </summary>
-    private void PerformUpdate()
+    private void PerformUpdate(float dt)
     {
         bool grounded = IsGrounding();
 
@@ -62,7 +62,7 @@ public class PlayerMover : MonoBehaviour, ILaunchable
         }
         else
         {
-            coyoteCounter -= Time.deltaTime; // 空中にいる間はカウントダウン
+            coyoteCounter -= dt; // 空中にいる間はカウントダウン（ポーズ中はdt=0なので停止する）
         }
     }
 
@@ -72,6 +72,9 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     /// <param name="入力"></param>
     public void Move(Vector2 input)
     {
+        // ポーズ中は何もしない
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         moveDirection = input * moveSpeed;
         float moveX = moveDirection.x;
 
@@ -134,6 +137,9 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     // ジャンプ処理
     public void Jump()
     {
+        // ポーズ中は何もしない
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         // コヨーテタイム内（coyoteCounter > 0）かつ、すでにジャンプ中でない場合
         if (coyoteCounter > 0f && !isJumping)
         {
@@ -180,6 +186,9 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     /// </summary>
     public void Launch(float verticalForce)
     {
+        // ポーズ中は何もしない
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         // 垂直速度を直接上書き（ジャンプ力との重複を防ぐ）
         rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, verticalForce);
 

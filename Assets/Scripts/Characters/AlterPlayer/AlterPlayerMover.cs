@@ -2,6 +2,7 @@ using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
+using ParcaDefecta.System;
 
 public class AlterPlayerMover : MonoBehaviour, ILaunchable
 {
@@ -40,7 +41,12 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
         float timer = duration;
         while (timer > 0f && !token.IsCancellationRequested)
         {
-            // 将来的にここでポーズ待機を差し込む
+            // ポーズ中は待機してループの先頭に戻る
+            if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value)
+            {
+                await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+                continue;
+            }
 
             // 方向ベクトルを考慮した一貫性のある速度適用
             rb2D.linearVelocity = new Vector2(direction.normalized.x * speed, rb2D.linearVelocity.y);

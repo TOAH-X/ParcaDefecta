@@ -1,4 +1,5 @@
 using UnityEngine;
+using ParcaDefecta.System;
 
 public class PlayerAnimation : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class PlayerAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // ポーズ中はパラメーター更新をスキップ
+        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
         // 走るモーションの更新
         animator.SetBool("run", playerMover.IsMoving);
         // ジャンプモーションの更新

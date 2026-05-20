@@ -59,7 +59,8 @@ public class SoundManager : Singleton<SoundManager>
 
         while (expiredTime < duration)
         {
-            expiredTime += Time.deltaTime;
+            // ポーズ（timeScale=0）の影響を受けずにフェードを完了させる
+            expiredTime += Time.unscaledDeltaTime;
             float t = expiredTime / duration;
 
             prevSource.volume = Mathf.Lerp(startPrevVolume, 0, t) * masterVolume * bgmVolume;
