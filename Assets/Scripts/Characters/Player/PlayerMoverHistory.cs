@@ -7,13 +7,15 @@ public class PlayerMoverHistory : MonoBehaviour
     // 履歴用のフレーム数（60fpsなら60フレーム）
     [SerializeField] private int frameDelay = 60;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    // 過去フレームの履歴
-    private Queue<PlayerFrameData> FrameHistory;
+
+    // セグメント化された履歴データ
+    private List<List<PlayerFrameData>> segments = new List<List<PlayerFrameData>>();
+    public IReadOnlyList<IReadOnlyList<PlayerFrameData>> Segments => segments;
 
     // Start is called before the first frame update
     void Start()
     {
-        FrameHistory = new Queue<PlayerFrameData>();
+        segments.Add(new List<PlayerFrameData>());
     }
 
     // Update is called once per frame
@@ -36,12 +38,28 @@ public class PlayerMoverHistory : MonoBehaviour
             sprite = spriteRenderer.sprite
         };
 
-        FrameHistory.Enqueue(frameData);
+        // 最新のセグメントに追加
+        segments[segments.Count - 1].Add(frameData);
 
-        // 余分な履歴は削除（常にframeDelay+αくらいに保つ）
-        if (FrameHistory.Count > frameDelay + 1)
+        // 全セグメントの合計点数を計算し、制限を超えていたら古いものから削除
+        int totalCount = GetTotalPointCount();
+        while (totalCount > frameDelay + 1)
         {
-            FrameHistory.Dequeue();
+            if (segments[0].Count > 0)
+            {
+                segments[0].RemoveAt(0);
+                totalCount--;
+            }
+
+            // セグメントが空になったら（かつ最新ではない場合）削除
+            if (segments[0].Count == 0 && segments.Count > 1)
+            {
+                segments.RemoveAt(0);
+            }
+            else if (segments[0].Count == 0 && segments.Count == 1)
+            {
+                break;
+            }
         }
     }
 
@@ -52,15 +70,37 @@ public class PlayerMoverHistory : MonoBehaviour
     {
         frameData = default;
 
-        if (framesAgo < 0 || framesAgo >= FrameHistory.Count)
+        int totalCount = GetTotalPointCount();
+        if (framesAgo < 0 || framesAgo >= totalCount)
             return false;
 
-        // Queueを配列にしてインデックスで取り出す
-        // (0 が一番古いデータ)
-        PlayerFrameData[] arr = FrameHistory.ToArray();
-        int index = arr.Length - 1 - framesAgo; // 最新からframesAgo分戻る
-        frameData = arr[index];
-        return true;
+        // 後ろから（最新から）カウントして該当データを探す
+        int targetIndexFromLast = totalCount - 1 - framesAgo;
+        int currentCounter = 0;
+
+        foreach (var segment in segments)
+        {
+            if (targetIndexFromLast < currentCounter + segment.Count)
+            {
+                frameData = segment[targetIndexFromLast - currentCounter];
+                return true;
+            }
+            currentCounter += segment.Count;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 新しい軌跡セグメントを開始（ワープ時などに呼び出す）
+    /// </summary>
+    public void StartNewSegment()
+    {
+        // 現在の最新セグメントが空でない場合のみ新しいセグメントを追加
+        if (segments[segments.Count - 1].Count > 0)
+        {
+            segments.Add(new List<PlayerFrameData>());
+        }
     }
 
     /// <summary>
@@ -68,7 +108,15 @@ public class PlayerMoverHistory : MonoBehaviour
     /// </summary>
     public void ClearData()
     {
-        FrameHistory.Clear();
+        segments.Clear();
+        segments.Add(new List<PlayerFrameData>());
+    }
+
+    private int GetTotalPointCount()
+    {
+        int count = 0;
+        foreach (var seg in segments) count += seg.Count;
+        return count;
     }
 
     // 過去フレームのデータ構造

@@ -27,7 +27,7 @@ public class PlayerTeleportation : MonoBehaviour
 
         // 移動と履歴リセット
         playerMover.SetPositionAndRotation(alterPlayerTransform.position, alterPlayerTransform.rotation);
-        playerMoverHistory.ClearData();
+        playerMoverHistory.StartNewSegment();
 
         // カウントダウン
         while (CurrentTimer > 0)
