@@ -1,11 +1,17 @@
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections.Generic;
 
 public class Switch : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] private UnityEvent<bool> onToggle = new UnityEvent<bool>(); // スイッチの状態変化を通知するイベント
+
     // 現在スイッチ内にいる「Player」タグを持つCollider2Dのリスト
     private List<Collider2D> occupants = new List<Collider2D>();
     private bool isSwitchOn = false; // 現在のスイッチの状態
+
+    public bool IsSwitchOn => isSwitchOn; // 外部から状態を参照するためのプロパティ
 
     // プレイヤーがトリガーに入った時に呼ばれる
     private void OnTriggerEnter2D(Collider2D other)
@@ -71,13 +77,14 @@ public class Switch : MonoBehaviour
             if (isSwitchOn)
             {
                 Debug.Log("Switch ON: プレイヤーがスイッチを起動しました。");
-                // ここにON時のロジックを記述
             }
             else
             {
                 Debug.Log("Switch OFF: スイッチから誰もいなくなりました。");
-                // ここにOFF時のロジックを記述
             }
+
+            // 登録されたすべてのギミック（Gateなど）に状態を通知
+            onToggle.Invoke(isSwitchOn);
         }
     }
 }

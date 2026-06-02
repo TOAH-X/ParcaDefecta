@@ -80,7 +80,7 @@ public class PlayerMover : MonoBehaviour, ILaunchable
 
 
         //isMoving = moveDirection.magnitude > 0.1f; // 移動中かどうかを更新
-        isMoving = input.magnitude > 0.1f;
+        isMoving = input.magnitude > 0f;
 
         /*
         if (isMoving) // 入力が一定以上の場合のみ更新
