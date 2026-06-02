@@ -20,7 +20,6 @@ namespace ParcaDefecta.System
             // TimeManagerのインスタンスが存在しない場合は処理をスキップ
             if (TimeManager.Instance == null) return;
 
-            /*
             // ポーズの切り替え（Escキー） 
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
@@ -34,7 +33,6 @@ namespace ParcaDefecta.System
                     Pause();
                 }
             }
-            */
         }
 
         public void Resume()
