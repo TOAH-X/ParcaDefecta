@@ -5,6 +5,7 @@ public class PlayerTrailRenderer : MonoBehaviour
 {
     [SerializeField] private PlayerMoverHistory history;
     [SerializeField] private float edgeRadius = 0.1f;
+    [SerializeField] private GameObject trailSegmentPrefab; // インスペクタからスクリプト付きのプレハブをアタッチ可能にする
     [SerializeField] private Material trailMaterial;
     [SerializeField] private AnimationCurve widthCurve = AnimationCurve.Constant(0, 1, 0.2f);
     [SerializeField] private Gradient colorGradient;
@@ -53,20 +54,32 @@ public class PlayerTrailRenderer : MonoBehaviour
             go = segmentPool[segmentPool.Count - 1];
             segmentPool.RemoveAt(segmentPool.Count - 1);
         }
+        else if (trailSegmentPrefab != null)
+        {
+            // プレハブが設定されている場合はそれを使用
+            go = Instantiate(trailSegmentPrefab, transform);
+        }
         else
         {
+            // プレハブがない場合は空のオブジェクトを作成
             go = new GameObject("TrailSegment");
             go.transform.SetParent(transform);
-            go.AddComponent<LineRenderer>();
-            go.AddComponent<EdgeCollider2D>();
         }
 
         go.SetActive(true);
+
+        // コンポーネントの取得（なければ追加）
+        var line = go.GetComponent<LineRenderer>();
+        if (line == null) line = go.AddComponent<LineRenderer>();
+
+        var collider = go.GetComponent<EdgeCollider2D>();
+        if (collider == null) collider = go.AddComponent<EdgeCollider2D>();
+
         var handler = new TrailSegmentHandler
         {
             Root = go,
-            Line = go.GetComponent<LineRenderer>(),
-            Collider = go.GetComponent<EdgeCollider2D>()
+            Line = line,
+            Collider = collider
         };
 
         handler.Line.useWorldSpace = true;
