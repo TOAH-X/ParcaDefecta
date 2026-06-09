@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace ParcaDefecta.System
 {
@@ -13,6 +14,22 @@ namespace ParcaDefecta.System
         {
             // ゲーム開始時はレジューム（解除）状態にする
             Resume();
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
+        {
+            // TimeManager側でリセットされるため、ここではUIの非表示処理など
+            // 必要最低限の処理に留める（現在はResume内でTimeManagerを呼んでいるので、そのままでも可）
         }
 
         void Update()
@@ -40,8 +57,7 @@ namespace ParcaDefecta.System
         public void Resume()
         {
             Debug.Log("ゲーム再開");
-            if (TimeManager.Instance != null)
-                TimeManager.Instance.SetMasterPause(false);
+            TimeManager.Instance.SetMasterPause(false);
 
             Time.timeScale = 1f;
         }
@@ -49,8 +65,7 @@ namespace ParcaDefecta.System
         public void Pause()
         {
             Debug.Log("ゲーム一時停止");
-            if (TimeManager.Instance != null)
-                TimeManager.Instance.SetMasterPause(true);
+            TimeManager.Instance.SetMasterPause(true);
 
             Time.timeScale = 0f;
 

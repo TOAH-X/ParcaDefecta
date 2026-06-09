@@ -31,7 +31,7 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     public bool IsJumping => isJumping;
 
     // コヨーテタイム用のカウンター
-    private float coyoteCounter;
+    public float coyoteCounter;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -137,6 +137,8 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     // ジャンプ処理
     public void Jump()
     {
+        Debug.Log("Debug:CoyoteCounter" + coyoteCounter);
+
         // ポーズ中は何もしない
         if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
 

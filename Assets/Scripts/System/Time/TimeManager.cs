@@ -3,6 +3,7 @@ using R3;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace ParcaDefecta.System
 {
@@ -38,6 +39,26 @@ namespace ParcaDefecta.System
             _isMasterPaused.CombineLatest(_isGameLogicPaused, (m, g) => m || g)
                 .Subscribe(x => IsPaused.Value = x)
                 .AddTo(this);
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
+        {
+            // シーン遷移時にすべてのポーズ状態を強制解除する
+            // PauseManagerに依存せず、ここで確実に時間を動かす
+            Time.timeScale = 1f;
+
+            SetMasterPause(false);
+            SetGameLogicPause(false);
         }
 
         private void Update()
