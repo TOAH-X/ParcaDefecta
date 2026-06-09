@@ -4372,10 +4372,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerTrailParent
       objectReference: {fileID: 0}
+    - target: {fileID: 4434789923828964048, guid: 1054d0b3b6af99b46834bff36d608d5a, type: 3}
+      propertyPath: trailSegmentPrefab
+      value: 
+      objectReference: {fileID: 8874261666626836036, guid: 4ab8e22ecf23a1c4d8509a1c12d8b2a4, type: 3}
     - target: {fileID: 4950266859498864615, guid: 1054d0b3b6af99b46834bff36d608d5a, type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 211ad1e6d48c9bf468a021065495d80e, type: 2}
+    - target: {fileID: 5960878784613651218, guid: 1054d0b3b6af99b46834bff36d608d5a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 6719837942395725324, guid: 1054d0b3b6af99b46834bff36d608d5a, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.45

@@ -6,9 +6,6 @@ public class PlayerTrailRenderer : MonoBehaviour
     [SerializeField] private PlayerMoverHistory history;
     [SerializeField] private float edgeRadius = 0.1f;
     [SerializeField] private GameObject trailSegmentPrefab; // インスペクタからスクリプト付きのプレハブをアタッチ可能にする
-    [SerializeField] private Material trailMaterial;
-    [SerializeField] private AnimationCurve widthCurve = AnimationCurve.Constant(0, 1, 0.2f);
-    [SerializeField] private Gradient colorGradient;
 
     // セグメント表示用のオブジェクトプール
     private List<GameObject> segmentPool = new List<GameObject>();
@@ -82,10 +79,11 @@ public class PlayerTrailRenderer : MonoBehaviour
             Collider = collider
         };
 
+        // ロジック上必須な設定のみ行う
+        // 位置計算がワールド座標ベースなので、ここだけは強制する
         handler.Line.useWorldSpace = true;
-        handler.Line.material = trailMaterial;
-        handler.Line.widthCurve = widthCurve;
-        handler.Line.colorGradient = colorGradient;
+
+        // 物理判定の設定
         handler.Collider.edgeRadius = edgeRadius;
         handler.Collider.isTrigger = true;
 
