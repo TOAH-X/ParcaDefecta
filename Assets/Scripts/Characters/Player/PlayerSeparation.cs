@@ -35,9 +35,6 @@ public class PlayerSeparation : MonoBehaviour
             CurrentTimer -= dt;
         }
 
-        // 履歴をリセット
-        playerMoverHistory.StartNewSegment();
-
         CurrentTimer = 0;
     }
 }
