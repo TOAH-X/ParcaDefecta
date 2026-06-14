@@ -87,4 +87,23 @@ public class Player : MonoBehaviour
         // 現在の入力値を渡して実行
         separation.Execute(playerInputReader.MoveInput);
     }
+
+    // 以下未確定
+    public void OnJumpButtonClick()
+    {
+        if (!isOperable) return;
+        playerMover.Jump();
+    }
+
+    public void OnLeftMoveButtonDown()
+    {
+        if (!isOperable) return;
+        playerMover.Move(Vector2.left);
+    }
+
+    public void OnRightMoveButtonDown()
+    {
+        if (!isOperable) return;
+        playerMover.Move(Vector2.right);
+    }
 }
