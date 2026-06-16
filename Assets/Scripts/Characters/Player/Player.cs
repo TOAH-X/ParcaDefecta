@@ -35,6 +35,9 @@ public class Player : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        //デバッグ用
+        StageManager.Instance?.StartGame();
     }
 
     // Update is called once per frame
@@ -99,6 +102,7 @@ public class Player : MonoBehaviour
     {
         if (!isOperable) return;
         playerMover.Move(Vector2.left);
+
     }
 
     public void OnRightMoveButtonDown()
