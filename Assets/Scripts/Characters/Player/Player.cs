@@ -80,8 +80,6 @@ public class Player : MonoBehaviour
     {
         if (!isOperable) return;
         teleportation.Execute();
-
-        StageManager.Instance.LoadStage("2");
     }
 
     public void OnSeparationButtonClick()

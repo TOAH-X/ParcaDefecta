@@ -1642,9 +1642,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, Assembly-CSharp
-        m_MethodName: OnSeparationButtonClick
+      - m_Target: {fileID: 736621130}
+        m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
+        m_MethodName: OnSeparationClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2470,6 +2470,7 @@ GameObject:
   - component: {fileID: 979388906}
   - component: {fileID: 979388908}
   - component: {fileID: 979388909}
+  - component: {fileID: 979388910}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -2587,6 +2588,18 @@ MonoBehaviour:
   FovRange: {x: 1, y: 100}
   DollyRange: {x: -100, y: 100}
   OrthoSizeRange: {x: 1, y: 10}
+--- !u!114 &979388910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979388904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b1e35e3a06da6245893e91d98cd5620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineTargetUpdater
 --- !u!1 &997718329
 GameObject:
   m_ObjectHideFlags: 0
@@ -3379,9 +3392,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Player, Assembly-CSharp
-        m_MethodName: OnTeleportationButtonClick
+      - m_Target: {fileID: 1536139719}
+        m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
+        m_MethodName: OnTeleportationClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
