@@ -276,7 +276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerTrailRenderer
   history: {fileID: 2856170947875069508}
   edgeRadius: 0.1
-  trailSegmentPrefab: {fileID: 0}
+  trailSegmentPrefab: {fileID: 8874261666626836036, guid: 4ab8e22ecf23a1c4d8509a1c12d8b2a4, type: 3}
 --- !u!1 &7745288673444044554
 GameObject:
   m_ObjectHideFlags: 0

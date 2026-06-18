@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
 
 /// <summary>
 /// ステージ管理を行うマネージャー。
@@ -10,7 +12,7 @@ public class StageManager : Singleton<StageManager>
 {
     [Header("Data Source")]
     [SerializeField] private StageDatabase database;
-    private const string DatabasePath = "StageDatabase";
+    private const string DatabaseAddress = "StageDatabase";
 
     [Header("Runtime State")]
     [SerializeField] private string currentStageId;
@@ -18,6 +20,7 @@ public class StageManager : Singleton<StageManager>
     private GameObject _currentPlayerInstance;
 
     private bool _isLoading;
+    private bool _isDatabaseLoading;
 
     /// <summary>
     /// [n=0を実現するための自動初期化]
@@ -34,56 +37,80 @@ public class StageManager : Singleton<StageManager>
     protected override void Awake()
     {
         base.Awake();
-        EnsureDatabaseLoaded();
     }
 
-    /// <summary>
-    /// データベースアセットが読み込まれていることを保証します。
-    /// </summary>
-    private void EnsureDatabaseLoaded()
+    private async void Start()
+    {
+        // データベースをAddressablesからロード
+        await EnsureDatabaseLoadedAsync();
+
+        // デバッグ用：初期ステージが設定されていなければ開始
+        if (string.IsNullOrEmpty(currentStageId))
+        {
+            StartGame();
+        }
+    }
+
+    private async UniTask EnsureDatabaseLoadedAsync()
     {
         if (database != null) return;
 
-        // 1. まずResourcesから試行
-        database = Resources.Load<StageDatabase>(DatabasePath);
-
-        // 2. なければメモリ上（Preloaded Assets等）から検索
-        if (database == null)
+        // 重複ロードを防止
+        if (_isDatabaseLoading)
         {
-            database = FindDatabaseInProject();
+            await UniTask.WaitUntil(() => database != null || !_isDatabaseLoading);
+            return;
         }
 
-        if (database == null)
+        _isDatabaseLoading = true;
+
+        // システムの初期化。既に終わっていればすぐ返ります。
+        var initHandle = Addressables.InitializeAsync();
+        await initHandle.ToUniTask();
+
+        try
         {
-            Debug.LogError($"StageManager: StageDatabase が見つかりません。インスペクターにセットするか、Resources/{DatabasePath} に配置するか、Preloaded Assets に登録してください。");
+            Debug.Log($"StageManager: Address '{DatabaseAddress}' のロードを試行します...");
+
+            var handle = Addressables.LoadAssetAsync<StageDatabase>(DatabaseAddress);
+            await handle.ToUniTask();
+
+            if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+            {
+                database = handle.Result;
+                Debug.Log($"StageManager: '{DatabaseAddress}' のロードに成功しました。");
+            }
+            else
+            {
+                // 詳細なエラー理由を出力
+                Debug.LogError($"StageManager: '{DatabaseAddress}' ロード失敗。Status: {handle.Status}, Exception: {handle.OperationException}");
+            }
+
+            if (database == null)
+            {
+                Debug.LogError($"StageManager: '{DatabaseAddress}' のロードは完了しましたが、結果が null です。Addressables グループの設定を確認してください。");
+            }
         }
-    }
-
-    private StageDatabase FindDatabaseInProject()
-    {
-        // 1. Resourcesフォルダを使わず、現在メモリにロードされているアセットから探す
-        // (Preloaded Assets に登録されている場合に有効)
-        var dbs = Resources.FindObjectsOfTypeAll<StageDatabase>();
-        if (dbs.Length > 0) return dbs[0];
-
-        Debug.LogError("StageManager: StageDatabaseが見つかりません。Project SettingsのPreloaded Assetsに登録するか、Resourcesフォルダに配置してください。");
-        return null;
+        catch (System.Exception e)
+        {
+            Debug.LogError($"StageManager: Addressablesで '{DatabaseAddress}' をロードできませんでした。Keyが正しいか、Addressable Groupsでアドレスが設定されているか確認してください。\nError: {e.Message}");
+        }
+        finally
+        {
+            _isDatabaseLoading = false;
+        }
     }
 
     /// <summary>
     /// ゲームを最初のステージから開始します（UIなどから呼び出し）。
     /// </summary>
-    public void StartGame()
+    public async void StartGame()
     {
-        EnsureDatabaseLoaded();
+        await EnsureDatabaseLoadedAsync();
         string firstId = database?.GetFirstStageId();
         if (!string.IsNullOrEmpty(firstId)) LoadStage(firstId);
     }
 
-    /// <summary>
-    /// これは使わない。
-    /// 次のステージへ進みます（ゴール地点のトリガーなどから呼び出し）。
-    /// </summary>
     public void AdvanceToNextStage()
     {
         if (database == null) return;
@@ -111,8 +138,12 @@ public class StageManager : Singleton<StageManager>
     public void LoadStage(string stageId)
     {
         if (_isLoading) return;
+        LoadStageAsync(stageId).Forget();
+    }
 
-        EnsureDatabaseLoaded();
+    private async UniTaskVoid LoadStageAsync(string stageId)
+    {
+        await EnsureDatabaseLoadedAsync();
         if (database == null) return;
 
         var info = database.GetStageInfo(stageId);
@@ -157,6 +188,11 @@ public class StageManager : Singleton<StageManager>
         if (database.PlayerParentPrefab != null)
         {
             _currentPlayerInstance = Instantiate(database.PlayerParentPrefab, spawnPos, spawnRot);
+            Debug.Log($"StageManager: プレイヤーを生成しました。位置: {spawnPos}");
+        }
+        else
+        {
+            Debug.LogError("StageManager: StageDatabase に PlayerParentPrefab が設定されていません。これが原因でプレイヤーが生成されません。");
         }
     }
 }

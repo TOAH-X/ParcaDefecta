@@ -27,17 +27,15 @@ public class Player : MonoBehaviour
     // シングルトンの初期化はAwakeで行うのが最も安全です
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        // StageManager側で生成・破棄を管理しているため、
+        // Awakeでの重複チェックによるDestroyは行わず、常に最新をInstanceに登録します。
+        // これにより、Destroy(旧) と Instantiate(新) が同フレームで起きた際の消失を防ぎます。
+        Instance = this;
+    }
 
-        //デバッグ用
-        StageManager.Instance?.StartGame();
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 
     // Update is called once per frame
@@ -82,6 +80,8 @@ public class Player : MonoBehaviour
     {
         if (!isOperable) return;
         teleportation.Execute();
+
+        StageManager.Instance.LoadStage("2");
     }
 
     public void OnSeparationButtonClick()
