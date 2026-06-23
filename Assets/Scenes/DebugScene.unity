@@ -355,6 +355,7 @@ GameObject:
   - component: {fileID: 122468613}
   - component: {fileID: 122468612}
   - component: {fileID: 122468615}
+  - component: {fileID: 122468616}
   m_Layer: 5
   m_Name: JumpButton
   m_TagString: Untagged
@@ -425,19 +426,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 122468613}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 122468615}
-        m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
-        m_MethodName: OnJumpClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &122468613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -488,6 +477,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1404c7cbe8074c5428ce6bdac3053497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUIBridge
+--- !u!114 &122468616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122468610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 122468615}
+          m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
+          m_MethodName: OnJumpClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &126937587
 GameObject:
   m_ObjectHideFlags: 0
@@ -988,50 +1006,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 362554816}
   m_CullTransparentMesh: 1
---- !u!1 &434805515
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 434805517}
-  - component: {fileID: 434805516}
-  m_Layer: 0
-  m_Name: TimeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &434805516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 434805515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1037044fbe10ff1419e2b9f7850ed56c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ParcaDefecta.System.TimeManager
---- !u!4 &434805517
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 434805515}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &446923311
 GameObject:
   m_ObjectHideFlags: 0
@@ -1571,6 +1545,7 @@ GameObject:
   - component: {fileID: 736621126}
   - component: {fileID: 736621130}
   - component: {fileID: 736621129}
+  - component: {fileID: 736621131}
   m_Layer: 5
   m_Name: SeparationButton
   m_TagString: Untagged
@@ -1641,19 +1616,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 736621127}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 736621130}
-        m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
-        m_MethodName: OnSeparationClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &736621127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1718,6 +1681,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1404c7cbe8074c5428ce6bdac3053497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUIBridge
+--- !u!114 &736621131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736621124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 736621130}
+          m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
+          m_MethodName: OnSeparationClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &758454351
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,6 +2317,7 @@ GameObject:
   - component: {fileID: 967682622}
   - component: {fileID: 967682621}
   - component: {fileID: 967682624}
+  - component: {fileID: 967682625}
   m_Layer: 5
   m_Name: RetryButton
   m_TagString: Untagged
@@ -2395,19 +2388,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 967682622}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 967682624}
-        m_TargetAssemblyTypeName: StageResetUIBridge, Assembly-CSharp
-        m_MethodName: OnResetButtonClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &967682622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2458,6 +2439,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9571fb2774fb3f147b963816e28a9857, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageResetUIBridge
+--- !u!114 &967682625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967682619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 967682624}
+          m_TargetAssemblyTypeName: StageResetUIBridge, Assembly-CSharp
+          m_MethodName: OnResetButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &979388904
 GameObject:
   m_ObjectHideFlags: 0
@@ -3321,6 +3331,7 @@ GameObject:
   - component: {fileID: 1536139715}
   - component: {fileID: 1536139719}
   - component: {fileID: 1536139718}
+  - component: {fileID: 1536139720}
   m_Layer: 5
   m_Name: TeleportationButton
   m_TagString: Untagged
@@ -3391,19 +3402,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1536139716}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1536139719}
-        m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
-        m_MethodName: OnTeleportationClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1536139716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3468,6 +3467,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1404c7cbe8074c5428ce6bdac3053497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUIBridge
+--- !u!114 &1536139720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536139713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1536139719}
+          m_TargetAssemblyTypeName: PlayerUIBridge, Assembly-CSharp
+          m_MethodName: OnTeleportationClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1608796269
 GameObject:
   m_ObjectHideFlags: 0
@@ -4629,5 +4657,4 @@ SceneRoots:
   - {fileID: 824107294}
   - {fileID: 305470239}
   - {fileID: 120177284}
-  - {fileID: 434805517}
   - {fileID: 1019406341}
