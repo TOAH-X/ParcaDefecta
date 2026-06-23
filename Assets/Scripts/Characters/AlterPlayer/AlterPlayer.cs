@@ -11,6 +11,9 @@ public class AlterPlayer : MonoBehaviour
     // 状態(分離されているか)
     bool isSeparated = false;
 
+    // 通常状態のカラーを保持
+    private Color normalColor;
+
     // 何秒遅れて追従するか
     [SerializeField] float syncDelaySeconds = 1.0f;             // Player側を参照すること
     // 分離された後何秒後にリセットされるか
@@ -19,7 +22,10 @@ public class AlterPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        if (spriteRenderer != null)
+        {
+            normalColor = spriteRenderer.color;
+        }
     }
 
     // Update is called once per frame
@@ -73,6 +79,12 @@ public class AlterPlayer : MonoBehaviour
         // 重力・当たり判定の適用
         alterPlayerMover.SetState(isSeparated);
 
+        // 分離中は不透明（255）にする
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = new Color(normalColor.r, normalColor.g, normalColor.b, 1.0f);
+        }
+
         alterPlayerMover.InertialMovement(moveDirection, 5f, 5f, this.GetCancellationTokenOnDestroy()).Forget();
 
 
@@ -92,5 +104,11 @@ public class AlterPlayer : MonoBehaviour
         isSeparated = false;
         // 重力・当たり判定の適用を外す
         alterPlayerMover.SetState(isSeparated);
+
+        // 透明度を通常状態に戻す
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = normalColor;
+        }
     }
 }
