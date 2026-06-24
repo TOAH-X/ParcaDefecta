@@ -18,6 +18,7 @@ namespace ParcaDefecta.System
             _ = SceneLoader.Instance;
             _ = SoundManager.Instance;
             _ = StageManager.Instance;
+            _ = SaveSystemManager.Instance;
         }
     }
 }
