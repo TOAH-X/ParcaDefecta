@@ -19,6 +19,7 @@ namespace ParcaDefecta.System
             _ = SoundManager.Instance;
             _ = StageManager.Instance;
             _ = SaveSystemManager.Instance;
+            _ = AchievementManager.Instance;
         }
     }
 }

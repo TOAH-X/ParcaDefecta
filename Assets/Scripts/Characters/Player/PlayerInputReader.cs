@@ -17,7 +17,7 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction jumpAction;
     private InputAction teleportationAction;
     private InputAction separationAction;
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -68,6 +68,7 @@ public class PlayerInputReader : MonoBehaviour
         if (teleportationAction != null)
         {
             TeleportationPressed = teleportationAction.triggered;
+            AchievementManager.Instance.NotifyProgress(AchievementType.JumpCount, 1); // ジャンプ回数の実績進捗を通知
         }
         else
         {

@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 09397aaa63eea0543accb603dc79341a
   m_SerializeEntries:
+  - m_GUID: 5d1e9e1c1e35fca4e9835b12824ff0bc
+    m_Address: AchievementDatabase
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8991988a52ba5da4caa0a4a5c96f22f4
     m_Address: StageDatabase
     m_ReadOnly: 0
