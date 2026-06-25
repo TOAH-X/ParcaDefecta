@@ -80,6 +80,8 @@ public class Player : MonoBehaviour
     {
         if (!isOperable) return;
         teleportation.Execute();
+
+        AchievementManager.Instance.NotifyProgress(AchievementType.JumpCount, 1); // ジャンプ回数の実績進捗を通知
     }
 
     public void OnSeparationButtonClick()

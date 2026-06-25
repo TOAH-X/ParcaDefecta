@@ -12,4 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40291634b71f83143acd285c1a5e06bc, type: 3}
   m_Name: AchievementDatabase
   m_EditorClassIdentifier: Assembly-CSharp::AchievementDatabase
-  achievements: []
+  achievements:
+  - id: 1
+    title: "\u8349\u3080\u3057\u308A\u691C\u5B9A"
+    description: "\u30D3\u30C3\u30B0\u30E2\u30FC\u30BF\u30FC\u306B\u5165\u793E\u3057\u305F"
+    icon: {fileID: 21300000, guid: 5a005bd3ce69e9f44b06e4db7fbabd08, type: 3}
+    type: 0
+    targetValue: 1
+  - id: 2
+    title: "\u8349\u306F\u3084\u3057\u691C\u5B9A"
+    description: "\u30D3\u30C3\u30B0\u30E2\u30FC\u30BF\u30FC\u3092\u9000\u8077\u3057\u305F"
+    icon: {fileID: 21300000, guid: 3ea76b352f4dd3f48b9b8e173bf6b542, type: 3}
+    type: 2
+    targetValue: 3

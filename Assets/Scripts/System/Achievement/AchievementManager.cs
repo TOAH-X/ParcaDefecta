@@ -13,6 +13,9 @@ public class AchievementManager : Singleton<AchievementManager>, ISaveable
     // 実績IDをキーとした、メモリ上の進捗管理用ディクショナリ
     private Dictionary<string, AchievementSaveEntry> progressMap = new Dictionary<string, AchievementSaveEntry>();
 
+    // 実績が解除された時のイベント
+    public System.Action<AchievementEntry> OnAchievementUnlocked;
+
     protected override void Awake()
     {
         base.Awake();
@@ -123,6 +126,10 @@ public class AchievementManager : Singleton<AchievementManager>, ISaveable
                 entry.isUnlocked = true;
                 entry.currentValue = data.targetValue;
                 Debug.Log($"[AchievementManager] 実績解除: {data.title}");
+
+                // イベント発火
+                OnAchievementUnlocked?.Invoke(data);
+                Debug.Log($"[AchievementManager] NotifyProgress: type={type}, amount={amount}, anyUpdated={anyUpdated},entry.currentValue={entry.currentValue}");
             }
         }
 
