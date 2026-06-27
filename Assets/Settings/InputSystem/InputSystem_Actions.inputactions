@@ -73,7 +73,7 @@
                     "name": "Separation",
                     "type": "Button",
                     "id": "675a7ff5-2e70-4fda-b7ec-8a8be8fcb17b",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -100,6 +100,15 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Retry",
+                    "type": "Button",
+                    "id": "7c2de927-51f7-4585-9d4e-1e66e8f7c8ab",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -390,6 +399,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d3ef138-62e8-5696-ae5f-931549f8d9bc",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Retry",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -11,12 +11,15 @@ public class PlayerInputReader : MonoBehaviour
     public bool TeleportationPressed { get; private set; }
     // 解放入力
     public bool SeparationPressed { get; private set; }
+    // リトライ入力
+    public bool RetryPressed { get; private set; }
 
 
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction teleportationAction;
     private InputAction separationAction;
+    private InputAction retryAction;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,6 +28,7 @@ public class PlayerInputReader : MonoBehaviour
         jumpAction = InputSystem.actions["Jump"];
         teleportationAction = InputSystem.actions["Teleportation"];
         separationAction = InputSystem.actions["Separation"];
+        retryAction = InputSystem.actions["Retry"];
     }
 
     // Update is called once per frame
@@ -82,6 +86,16 @@ public class PlayerInputReader : MonoBehaviour
         else
         {
             SeparationPressed = false;
+        }
+
+        // リトライ
+        if (retryAction != null)
+        {
+            RetryPressed = retryAction.triggered;
+        }
+        else
+        {
+            RetryPressed = false;
         }
     }
 }

@@ -41,7 +41,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // ポーズ中は入力を受け付けない
+        // リトライ入力はポーズ中でも受け付ける
+        if (playerInputReader.RetryPressed)
+        {
+            OnRetryPressed();
+            return;
+        }
+
+        // ポーズ中は他の入力を受け付けない
         if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
 
         if (isOperable == true)
@@ -96,6 +103,17 @@ public class Player : MonoBehaviour
     {
         if (!isOperable) return;
         playerMover.Jump();
+    }
+
+    /// <summary>
+    /// リトライ入力処理。ポーズ中でも実行可能。
+    /// </summary>
+    private void OnRetryPressed()
+    {
+        if (StageManager.Instance != null)
+        {
+            StageManager.Instance.ReloadCurrentStage();
+        }
     }
 
     public void OnLeftMoveButtonDown()
