@@ -43,8 +43,10 @@ GameObject:
   - component: {fileID: 5831127130748701526}
   - component: {fileID: 4950266859498864615}
   - component: {fileID: 1519548906041073058}
+  - component: {fileID: 8775953216349406161}
   - component: {fileID: 613552283749301821}
   - component: {fileID: 368007630927340977}
+  - component: {fileID: 1135699357205747077}
   m_Layer: 0
   m_Name: AlterPlayer
   m_TagString: Player
@@ -199,6 +201,28 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6, y: 1}
   m_EdgeRadius: 0
+--- !u!95 &8775953216349406161
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3117465060353165617}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 21468bd2cdd04e04a994384f5ee3ceb9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &613552283749301821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +254,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AlterPlayerMover
   rb2D: {fileID: 4950266859498864615}
   boxCollider2D: {fileID: 1519548906041073058}
+--- !u!114 &1135699357205747077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3117465060353165617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb9a17529b684dc4b89df0997010ed1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlterPlayerAnimation
+  alterPlayerMover: {fileID: 368007630927340977}
+  animator: {fileID: 8775953216349406161}
 --- !u!1 &4415928886360904857
 GameObject:
   m_ObjectHideFlags: 0

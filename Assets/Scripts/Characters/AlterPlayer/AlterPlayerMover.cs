@@ -9,6 +9,10 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
     [SerializeField] private Rigidbody2D rb2D;
     [SerializeField] private BoxCollider2D boxCollider2D;
 
+    // 移動中か(run)
+    private bool isMoving;
+    public bool IsMoving => isMoving;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,21 +42,39 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
     public async UniTaskVoid InertialMovement(Vector2 direction, float speed, float duration, CancellationToken token)
     {
         // 慣性移動開始
-        float timer = duration;
-        while (timer > 0f && !token.IsCancellationRequested)
+        if (direction != Vector2.zero)
         {
-            // ポーズ中は待機してループの先頭に戻る
-            if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value)
+            isMoving = true;
+        }
+
+        float timer = duration;
+        try
+        {
+            while (timer > 0f && !token.IsCancellationRequested)
             {
+                // ポーズ中は待機してループの先頭に戻る
+                if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value)
+                {
+                    isMoving = false;
+                    await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+                    continue;
+                }
+
+                if (direction != Vector2.zero)
+                {
+                    isMoving = true;
+                }
+
+                // 方向ベクトルを考慮した一貫性のある速度適用
+                rb2D.linearVelocity = new Vector2(direction.normalized.x * speed, rb2D.linearVelocity.y);
+
+                timer -= Time.fixedDeltaTime;
                 await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
-                continue;
             }
-
-            // 方向ベクトルを考慮した一貫性のある速度適用
-            rb2D.linearVelocity = new Vector2(direction.normalized.x * speed, rb2D.linearVelocity.y);
-
-            timer -= Time.fixedDeltaTime;
-            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+        }
+        finally
+        {
+            isMoving = false;
         }
     }
 

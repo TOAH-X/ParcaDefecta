@@ -22,4 +22,10 @@ MonoBehaviour:
   - key: C
     clip: {fileID: 8300000, guid: 3ead00bcf36ae4e4bb8308477c808ec6, type: 3}
     loop: 1
-  seEntries: []
+  seEntries:
+  - key: 1
+    clip: {fileID: 8300000, guid: c13b618843a71b749a1fa05d0b973637, type: 3}
+    loop: 0
+  - key: 2
+    clip: {fileID: 8300000, guid: 4da7d9c3ad78c9048a86678ac36c2309, type: 3}
+    loop: 0
