@@ -30,18 +30,6 @@ public class StageManager : Singleton<StageManager>
     public Observable<Transform> OnPlayerSpawned => _onPlayerSpawned;
 
 
-    /// <summary>
-    /// [n=0を実現するための自動初期化]
-    /// ゲーム開始時に自動的に呼び出され、インスタンスを生成します。
-    /// </summary>
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void InitializeSystem()
-    {
-        // Instanceを呼ぶことで、Singleton基底クラスのロジックにより
-        // GameObjectが生成され、DontDestroyOnLoadに登録されます。
-        var _ = Instance;
-    }
-
     protected override void Awake()
     {
         base.Awake();
