@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.Scripting;
 
 // 基底シングルトンを Singleton<T> と仮定して継承します
+[Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class SceneLoader : Singleton<SceneLoader>
 {
     /// <summary>

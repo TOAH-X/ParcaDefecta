@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Scripting;
 
+[Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class SaveSystemManager : Singleton<SaveSystemManager>
 {
     private readonly HashSet<ISaveable> saveables = new HashSet<ISaveable>();

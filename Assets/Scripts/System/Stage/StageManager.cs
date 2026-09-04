@@ -4,11 +4,13 @@ using System.Linq;
 using R3;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
+using UnityEngine.Scripting;
 
 /// <summary>
 /// ステージ管理を行うマネージャー。
 /// どのシーンから開始しても自動的に初期化され、StageDatabaseを解決します。
 /// </summary>
+[Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class StageManager : Singleton<StageManager>
 {
     [Header("Data Source")]

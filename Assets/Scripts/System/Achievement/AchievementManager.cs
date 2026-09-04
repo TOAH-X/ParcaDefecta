@@ -4,7 +4,9 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
+using UnityEngine.Scripting;
 
+[Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class AchievementManager : Singleton<AchievementManager>, ISaveable
 {
     // Addressablesからロードされる実績マスターデータ一覧

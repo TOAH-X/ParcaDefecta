@@ -3,7 +3,9 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using UnityEngine.Scripting;
 
+[Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class SoundManager : Singleton<SoundManager>
 {
     [SerializeField] private string soundDatabaseAddress = "SoundDatabase";

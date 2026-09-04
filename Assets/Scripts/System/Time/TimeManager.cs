@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.Scripting;
 
 namespace ParcaDefecta.System
 {
@@ -11,6 +12,7 @@ namespace ParcaDefecta.System
     /// ゲーム内の時間を一元管理するシングルトン。
     /// R3を使用して、ポーズ状態や毎フレームのTickを通知します。
     /// </summary>
+    [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
     public class TimeManager : Singleton<TimeManager>
     {
         // ポーズ状態を保持するリアクティブプロパティ

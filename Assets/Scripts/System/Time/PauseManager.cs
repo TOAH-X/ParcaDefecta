@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Scripting;
 
 namespace ParcaDefecta.System
 {
@@ -8,6 +9,7 @@ namespace ParcaDefecta.System
     /// ポーズメニューの表示や入力を管理するクラス。
     /// UIボタンからのアクセスを容易にするため、シングルトンとして実装します。
     /// </summary>
+    [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
     public class PauseManager : Singleton<PauseManager>
     {
         private void Start()
