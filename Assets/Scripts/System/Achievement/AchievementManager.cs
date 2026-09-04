@@ -34,12 +34,12 @@ public class AchievementManager : Singleton<AchievementManager>, ISaveable
         {
             // Addressables から AchievementDatabase をロード
             var db = await Addressables
-                .LoadAssetAsync<AchievementDatabase>("AchievementDatabase")
+                .LoadAssetAsync<AchievementDatabase>(AddressableKeys.AchievementDatabase)
                 .ToUniTask(cancellationToken: token);
 
             if (db == null)
             {
-                Debug.LogError("[AchievementManager] AchievementDatabase が見つかりません。Addressables設定を確認してください。");
+                Debug.LogError($"[AchievementManager] AchievementDatabase '{AddressableKeys.AchievementDatabase}' が見つかりません。Addressables設定を確認してください。");
                 return;
             }
 

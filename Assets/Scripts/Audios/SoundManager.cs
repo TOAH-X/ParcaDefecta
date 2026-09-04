@@ -8,7 +8,7 @@ using UnityEngine.Scripting;
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class SoundManager : Singleton<SoundManager>
 {
-    [SerializeField] private string soundDatabaseAddress = "SoundDatabase";
+    // 実行時確認用（AddComponent生成のため事前編集は不可）
     [SerializeField] private SoundDatabase soundDatabase;
     [SerializeField] private BgmPlayer bgmPlayer;
     [SerializeField] private SePlayer sePlayer;
@@ -55,17 +55,17 @@ public class SoundManager : Singleton<SoundManager>
         try
         {
             var database = await Addressables
-                .LoadAssetAsync<SoundDatabase>(soundDatabaseAddress)
+                .LoadAssetAsync<SoundDatabase>(AddressableKeys.SoundDatabase)
                 .ToUniTask(cancellationToken: token);
 
             if (database == null)
             {
-                Debug.LogError($"[SoundManager] SoundDatabase '{soundDatabaseAddress}' が見つかりません。Addressables設定を確認してください。");
+                Debug.LogError($"[SoundManager] SoundDatabase '{AddressableKeys.SoundDatabase}' が見つかりません。Addressables設定を確認してください。");
                 return;
             }
 
             soundDatabase = database;
-            Debug.Log($"[SoundManager] SoundDatabase '{soundDatabaseAddress}' を読み込みました。");
+            Debug.Log($"[SoundManager] SoundDatabase '{AddressableKeys.SoundDatabase}' を読み込みました。");
         }
         catch (OperationCanceledException)
         {

@@ -15,7 +15,7 @@ public class AchievementUIPresenter : MonoBehaviour
     [SerializeField] private float displayDuration = 3f;
 
     private Queue<AchievementEntry> notificationQueue = new Queue<AchievementEntry>();
-    private bool isDisplaying = false;
+    private bool isProcessing = false;
 
     private void OnEnable()
     {
@@ -36,34 +36,29 @@ public class AchievementUIPresenter : MonoBehaviour
     private void OnAchievementUnlocked(AchievementEntry achievement)
     {
         notificationQueue.Enqueue(achievement);
+
+        // 消化ループは常に1本だけ。既に動いていればキューに積むだけでよい
+        if (isProcessing) return;
         _ = ProcessQueueAsync();
     }
 
     private async UniTaskVoid ProcessQueueAsync()
     {
+        isProcessing = true;
         while (notificationQueue.Count > 0)
         {
-            if (isDisplaying)
-            {
-                // 現在表示中なら次のフレームで再度チェック
-                await UniTask.Delay(100);
-                continue;
-            }
-
             var achievement = notificationQueue.Dequeue();
             await ShowNotificationAsync(achievement);
         }
+        isProcessing = false;
     }
 
     private async UniTask ShowNotificationAsync(AchievementEntry achievement)
     {
-        isDisplaying = true;
-
         // プレハブを親なしでインスタンス化
         if (achievementNotificationPrefab == null)
         {
             Debug.LogWarning("[AchievementUIPresenter] achievementNotificationPrefab が設定されていません");
-            isDisplaying = false;
             return;
         }
 
@@ -82,7 +77,6 @@ public class AchievementUIPresenter : MonoBehaviour
         {
             Debug.LogWarning("[AchievementUIPresenter] AchievementNotificationView コンポーネントが見つかりません");
             Destroy(notificationGameObject);
-            isDisplaying = false;
             return;
         }
 
@@ -94,7 +88,5 @@ public class AchievementUIPresenter : MonoBehaviour
 
         // クリーンアップ
         Destroy(notificationGameObject);
-
-        isDisplaying = false;
     }
 }

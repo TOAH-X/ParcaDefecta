@@ -15,7 +15,6 @@ public class StageManager : Singleton<StageManager>
 {
     [Header("Data Source")]
     [SerializeField] private StageDatabase database;
-    private const string DatabaseAddress = "StageDatabase";
 
     [Header("Runtime State")]
     [SerializeField] private string currentStageId;
@@ -84,9 +83,9 @@ public class StageManager : Singleton<StageManager>
 
         try
         {
-            Debug.Log($"StageManager: Addressable Key '{DatabaseAddress}' を使用して StageDatabase のロードを開始します。");
+            Debug.Log($"StageManager: Addressable Key '{AddressableKeys.StageDatabase}' を使用して StageDatabase のロードを開始します。");
 
-            var handle = Addressables.LoadAssetAsync<StageDatabase>(DatabaseAddress);
+            var handle = Addressables.LoadAssetAsync<StageDatabase>(AddressableKeys.StageDatabase);
             await handle.ToUniTask();
 
             if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
@@ -94,17 +93,17 @@ public class StageManager : Singleton<StageManager>
                 database = handle.Result;
                 if (database != null)
                 {
-                    Debug.Log($"StageManager: '{DatabaseAddress}' のロードに成功しました。アセット名: {database.name}");
+                    Debug.Log($"StageManager: '{AddressableKeys.StageDatabase}' のロードに成功しました。アセット名: {database.name}");
                 }
                 else
                 {
-                    Debug.LogError($"StageManager: '{DatabaseAddress}' のロードは成功しましたが、結果のデータベースが null です。Addressables グループの設定を確認してください。");
+                    Debug.LogError($"StageManager: '{AddressableKeys.StageDatabase}' のロードは成功しましたが、結果のデータベースが null です。Addressables グループの設定を確認してください。");
                 }
             }
             else
             {
                 // 詳細なエラー理由を出力
-                Debug.LogError($"StageManager: '{DatabaseAddress}' のロードに失敗しました。Status: {handle.Status}");
+                Debug.LogError($"StageManager: '{AddressableKeys.StageDatabase}' のロードに失敗しました。Status: {handle.Status}");
                 if (handle.OperationException != null)
                 {
                     Debug.LogException(handle.OperationException);
@@ -113,7 +112,7 @@ public class StageManager : Singleton<StageManager>
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"StageManager: Addressablesでの '{DatabaseAddress}' ロード中に例外が発生しました。Keyが正しいか、Addressable Groupsでアドレスが設定されているか確認してください。\nError: {e.Message}");
+            Debug.LogError($"StageManager: Addressablesでの '{AddressableKeys.StageDatabase}' ロード中に例外が発生しました。Keyが正しいか、Addressable Groupsでアドレスが設定されているか確認してください。\nError: {e.Message}");
         }
         finally
         {

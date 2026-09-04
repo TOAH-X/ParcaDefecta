@@ -89,7 +89,7 @@ public class Player : MonoBehaviour
         teleportation.Execute();
 
         // SoundManager.Instance.PlayBgm("A", 0.5f);
-        // AchievementManager.Instance.NotifyProgress(AchievementType.JumpCount, 1); // ジャンプ回数の実績進捗を通知
+        AchievementManager.Instance.NotifyProgress(AchievementType.JumpCount, 1); // ジャンプ回数の実績進捗を通知
     }
 
     public void OnSeparationButtonClick()
