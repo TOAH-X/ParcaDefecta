@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         }
 
         // ポーズ中は他の入力を受け付けない
-        if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+        if (IsPaused()) return;
 
         if (isOperable == true)
         {
@@ -83,8 +83,10 @@ public class Player : MonoBehaviour
     }
 
     // UIボタンの OnClick 等から呼び出すためのメソッド
+    // キー入力側（Update）と同様に、ポーズ中は受け付けない
     public void OnTeleportationButtonClick()
     {
+        if (IsPaused()) return;
         if (!isOperable) return;
         teleportation.Execute();
 
@@ -94,6 +96,7 @@ public class Player : MonoBehaviour
 
     public void OnSeparationButtonClick()
     {
+        if (IsPaused()) return;
         if (!isOperable) return;
         // 現在の入力値を渡して実行
         separation.Execute(playerInputReader.MoveInput);
@@ -102,8 +105,14 @@ public class Player : MonoBehaviour
     // 以下未確定
     public void OnJumpButtonClick()
     {
+        if (IsPaused()) return;
         if (!isOperable) return;
         playerMover.Jump();
+    }
+
+    private static bool IsPaused()
+    {
+        return TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value;
     }
 
     /// <summary>
@@ -117,16 +126,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void OnLeftMoveButtonDown()
+    /// <summary>
+    /// UI ボタンからの左右入力を受け取る。実際の移動は Update 内の PlayerControl で一括して行う。
+    /// </summary>
+    public void SetUIHorizontalInput(float horizontal)
     {
-        if (!isOperable) return;
-        playerMover.Move(Vector2.left);
-
-    }
-
-    public void OnRightMoveButtonDown()
-    {
-        if (!isOperable) return;
-        playerMover.Move(Vector2.right);
+        playerInputReader.SetUIHorizontal(horizontal);
     }
 }

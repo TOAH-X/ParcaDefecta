@@ -10,14 +10,14 @@ public class AlterPlayer : MonoBehaviour
 
     // 状態(分離されているか)
     bool isSeparated = false;
+    public bool IsSeparated => isSeparated;
 
     // 通常状態のカラーを保持
     private Color normalColor;
 
     // 何秒遅れて追従するか
     [SerializeField] float syncDelaySeconds = 1.0f;             // Player側を参照すること
-    // 分離された後何秒後にリセットされるか
-    [SerializeField] float separationDuration = 5.0f;           // Player側を参照すること
+    // 分離の持続秒数と慣性速度は PlayerSeparation 側で一元管理し、Separation の引数で受け取る
 
     // Start is called before the first frame update
     void Start()
@@ -72,7 +72,10 @@ public class AlterPlayer : MonoBehaviour
     }
 
     // 解放？※壁抜け対策を行うこと
-    public void Separation(Vector2 moveDirection)
+    /// <param name="moveDirection">分離直後に慣性で進む方向</param>
+    /// <param name="duration">分離している秒数。慣性移動もこの秒数だけ続く</param>
+    /// <param name="inertialSpeed">慣性移動の速さ</param>
+    public void Separation(Vector2 moveDirection, float duration, float inertialSpeed)
     {
         // 分離
         isSeparated = true;
@@ -85,11 +88,10 @@ public class AlterPlayer : MonoBehaviour
             spriteRenderer.color = new Color(normalColor.r, normalColor.g, normalColor.b, 1.0f);
         }
 
-        alterPlayerMover.InertialMovement(moveDirection, 5f, 5f, this.GetCancellationTokenOnDestroy()).Forget();
-
+        alterPlayerMover.InertialMovement(moveDirection, inertialSpeed, duration, this.GetCancellationTokenOnDestroy()).Forget();
 
         // UniTaskで待機 → 自動的に戻す
-        ResetSeparationAsync(separationDuration).Forget();
+        ResetSeparationAsync(duration).Forget();
     }
 
     // 解放状態を戻す
