@@ -1,34 +1,53 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using UnityEngine.Scripting;
+using Cysharp.Threading.Tasks;
 
-// 基底シングルトンを Singleton<T> と仮定して継承します
+/// <summary>
+/// シーン遷移の窓口。シーン遷移は必ずトランジション演出を通る。
+/// 遷移中に来た要求は無視する（多重ロード防止）。
+/// </summary>
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class SceneLoader : Singleton<SceneLoader>
 {
-    /// <summary>
-    /// 指定したシーンへ即座に遷移します
-    /// </summary>
-    public void ChangeScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-    }
+    /// <summary>遷移中なら true。演出の開始から終了までを含む</summary>
+    public bool IsChanging { get; private set; }
 
     /// <summary>
-    /// 非同期でシーンをロードします（将来的にフェード演出などを追加しやすい）
+    /// 演出で画面を隠してからシーンをロードし、完了後に画面を開けます。完了まで待てます。
     /// </summary>
-    public void ChangeSceneAsync(string sceneName)
+    public async UniTask ChangeSceneAsync(string sceneName, TransitionManager.TransitionType type = TransitionManager.TransitionType.Fade)
     {
-        StartCoroutine(LoadSceneRoutine(sceneName));
-    }
-
-    private IEnumerator LoadSceneRoutine(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        while (!asyncLoad.isDone)
+        if (string.IsNullOrEmpty(sceneName))
         {
-            yield return null;
+            Debug.LogWarning("[SceneLoader] シーン名が空のため遷移しません");
+            return;
         }
+
+        if (IsChanging)
+        {
+            Debug.LogWarning($"[SceneLoader] 遷移中のため '{sceneName}' への要求を無視します");
+            return;
+        }
+
+        IsChanging = true;
+        try
+        {
+            await TransitionManager.Instance.RunWithTransitionAsync(
+                () => SceneManager.LoadSceneAsync(sceneName).ToUniTask(),
+                type);
+        }
+        finally
+        {
+            IsChanging = false;
+        }
+    }
+
+    /// <summary>
+    /// ChangeSceneAsync の完了を待たない版。Button の OnClick など戻り値を扱えない場所から使います。
+    /// </summary>
+    public void ChangeScene(string sceneName, TransitionManager.TransitionType type = TransitionManager.TransitionType.Fade)
+    {
+        ChangeSceneAsync(sceneName, type).Forget();
     }
 }

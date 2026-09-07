@@ -8,7 +8,7 @@ using Cysharp.Threading.Tasks;
 /// キュー管理して View（プレハブ）を順番に表示する
 /// Canvas にアタッチして使用
 /// </summary>
-public class AchievementUIPresenter : MonoBehaviour
+public class AchievementPresenter : MonoBehaviour
 {
     [SerializeField] private GameObject achievementNotificationPrefab;
     [SerializeField] private Transform notificationContainer;
@@ -58,7 +58,7 @@ public class AchievementUIPresenter : MonoBehaviour
         // プレハブを親なしでインスタンス化
         if (achievementNotificationPrefab == null)
         {
-            Debug.LogWarning("[AchievementUIPresenter] achievementNotificationPrefab が設定されていません");
+            Debug.LogWarning("[AchievementPresenter] achievementNotificationPrefab が設定されていません");
             return;
         }
 
@@ -75,7 +75,7 @@ public class AchievementUIPresenter : MonoBehaviour
         var notificationView = notificationGameObject.GetComponent<AchievementNotificationView>();
         if (notificationView == null)
         {
-            Debug.LogWarning("[AchievementUIPresenter] AchievementNotificationView コンポーネントが見つかりません");
+            Debug.LogWarning("[AchievementPresenter] AchievementNotificationView コンポーネントが見つかりません");
             Destroy(notificationGameObject);
             return;
         }
