@@ -8,4 +8,5 @@ public static class AddressableKeys
     public const string SoundDatabase = "SoundDatabase";
     public const string StageDatabase = "StageDatabase";
     public const string NotificationCanvas = "NotificationCanvas";
+    public const string TransitionCanvas = "TransitionCanvas";
 }

@@ -15,8 +15,18 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 09397aaa63eea0543accb603dc79341a
   m_SerializeEntries:
+  - m_GUID: 14304e94b96704b43b258fc2a4454f0d
+    m_Address: TransitionParent
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d1e9e1c1e35fca4e9835b12824ff0bc
     m_Address: AchievementDatabase
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81c637ac5c0e44e9bfcd3870684b80ae
+    m_Address: TransitionCanvas
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -18,6 +18,7 @@ public class CanvasManager : Singleton<CanvasManager>
     private static readonly string[] CanvasAddresses =
     {
         AddressableKeys.NotificationCanvas,
+        AddressableKeys.TransitionCanvas,
     };
 
     protected override void Awake()
