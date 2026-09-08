@@ -36,32 +36,9 @@ public class StageManager : Singleton<StageManager>
 
     private async void Start()
     {
-        // データベースをAddressablesからロード
+        // データベースを先読みしておく。
+        // ステージを置くタイミングは GameFlowManager が決めるため、ここでは読み込みだけ行う
         await EnsureDatabaseLoadedAsync();
-
-        // 安全策：もしシーンに既にPlayerやStageが存在している場合は管理下に置く
-        // これにより、手動配置されたプレイヤーが最初のステージロード時に正しく破棄・置換されます。
-        if (_currentPlayerInstance == null && Player.Instance != null)
-        {
-            // PlayerParentを取得
-            _currentPlayerInstance = Player.Instance.transform.root.gameObject;
-        }
-
-        // ステージについても同様に、手動配置されている場合は管理下に置く
-        if (_currentStageInstance == null)
-        {
-            StageData existingStage = FindAnyObjectByType<StageData>();
-            if (existingStage != null)
-            {
-                _currentStageInstance = existingStage.gameObject;
-            }
-        }
-
-        // デバッグ用：初期ステージが設定されていなければ開始
-        if (string.IsNullOrEmpty(currentStageId))
-        {
-            StartGame();
-        }
     }
 
     private async UniTask EnsureDatabaseLoadedAsync()
@@ -121,13 +98,12 @@ public class StageManager : Singleton<StageManager>
     }
 
     /// <summary>
-    /// ゲームを最初のステージから開始します（UIなどから呼び出し）。
+    /// 先頭ステージの ID を返します。データベース未読込なら読み込みを待ちます。見つからなければ null。
     /// </summary>
-    public async void StartGame()
+    public async UniTask<string> GetFirstStageIdAsync()
     {
         await EnsureDatabaseLoadedAsync();
-        string firstId = database?.GetFirstStageId();
-        if (!string.IsNullOrEmpty(firstId)) LoadStage(firstId);
+        return database?.GetFirstStageId();
     }
 
     public void AdvanceToNextStage()
@@ -152,42 +128,110 @@ public class StageManager : Singleton<StageManager>
     }
 
     /// <summary>
-    /// 指定されたIDのステージを読み込み、プレイヤーを配置します。
+    /// 指定されたIDのステージを読み込み、プレイヤーを配置します。完了を待たない版。
     /// </summary>
     public void LoadStage(string stageId)
     {
-        if (_isLoading) return;
         LoadStageAsync(stageId).Forget();
     }
 
-    private async UniTaskVoid LoadStageAsync(string stageId)
+    /// <summary>
+    /// 指定されたIDのステージを読み込み、プレイヤーを配置します。完了まで待てます。
+    /// 読み込み中に来た要求は無視します（データベースの読み込み待ちも含む）。
+    /// </summary>
+    public async UniTask LoadStageAsync(string stageId)
     {
-        await EnsureDatabaseLoadedAsync();
-        if (database == null) return;
-
-        var info = database.GetStageInfo(stageId);
-
-        if (info == null || info.Prefab == null)
+        if (_isLoading)
         {
-            Debug.LogError($"StageManager: ID '{stageId}' のステージ定義が見つからないか、プレハブが未設定です。");
+            Debug.LogWarning($"StageManager: ステージ読み込み中のため '{stageId}' への要求を無視します。");
             return;
         }
 
         _isLoading = true;
-        currentStageId = stageId;
-        ProcessStageLoading(info.Prefab);
-        _isLoading = false;
+        try
+        {
+            await EnsureDatabaseLoadedAsync();
+            if (database == null) return;
+
+            var info = database.GetStageInfo(stageId);
+
+            if (info == null || info.Prefab == null)
+            {
+                Debug.LogError($"StageManager: ID '{stageId}' のステージ定義が見つからないか、プレハブが未設定です。");
+                return;
+            }
+
+            currentStageId = stageId;
+            ProcessStageLoading(info.Prefab);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
+    /// <summary>
+    /// ステージ生成の統合処理。既存のステージと Player をすべて破棄してから、新しいステージと Player を生成します。
+    /// 手置きのオブジェクトも自分が生成したものも区別せず破棄するため、生成後は常にステージ 1 つ・Player 1 体になります。
+    /// </summary>
     private void ProcessStageLoading(StageData stagePrefab)
     {
-        // 古いインスタンスを破棄
-        if (_currentPlayerInstance != null) Destroy(_currentPlayerInstance);
-        if (_currentStageInstance != null) Destroy(_currentStageInstance);
+        DestroyExistingStages();
+        DestroyExistingPlayers();
 
-        // ステージの生成
+        StageData stageInstance = SpawnStage(stagePrefab);
+        SpawnPlayer(stageInstance);
+    }
+
+    /// <summary>
+    /// シーン内の StageData を持つオブジェクトをすべて破棄します。
+    /// </summary>
+    private void DestroyExistingStages()
+    {
+        foreach (var stage in FindObjectsByType<StageData>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            Destroy(stage.gameObject);
+        }
+        _currentStageInstance = null;
+    }
+
+    /// <summary>
+    /// シーン内の Player をすべて探し、それぞれのルート（PlayerParent）を破棄します。
+    /// </summary>
+    private void DestroyExistingPlayers()
+    {
+        var roots = new HashSet<GameObject>();
+        foreach (var player in FindObjectsByType<Player>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            roots.Add(player.transform.root.gameObject);
+        }
+        foreach (var root in roots)
+        {
+            Destroy(root);
+        }
+        _currentPlayerInstance = null;
+    }
+
+    /// <summary>
+    /// ステージを生成して保持します。
+    /// </summary>
+    private StageData SpawnStage(StageData stagePrefab)
+    {
         StageData stageInstance = Instantiate(stagePrefab);
         _currentStageInstance = stageInstance.gameObject;
+        return stageInstance;
+    }
+
+    /// <summary>
+    /// ステージの SpawnPoint に Player を生成して保持し、生成を通知します。
+    /// </summary>
+    private void SpawnPlayer(StageData stageInstance)
+    {
+        if (database.PlayerParentPrefab == null)
+        {
+            Debug.LogError("StageManager: StageDatabase に PlayerParentPrefab が設定されていません。これが原因でプレイヤーが生成されません。");
+            return;
+        }
 
         // スポーン座標の取得 (StageDataから直接取得)
         Vector3 spawnPos = Vector3.zero;
@@ -200,25 +244,17 @@ public class StageManager : Singleton<StageManager>
         }
         else
         {
-            Debug.LogWarning($"StageManager: プレハブ '{stagePrefab.name}' に SpawnPoint が設定されていません。");
+            Debug.LogWarning($"StageManager: ステージ '{stageInstance.name}' に SpawnPoint が設定されていません。");
         }
 
-        // プレイヤーの生成
-        if (database.PlayerParentPrefab != null)
-        {
-            _currentPlayerInstance = Instantiate(database.PlayerParentPrefab, spawnPos, spawnRot);
-            Debug.Log($"StageManager: プレイヤーを生成しました。位置: {spawnPos}");
+        _currentPlayerInstance = Instantiate(database.PlayerParentPrefab, spawnPos, spawnRot);
+        Debug.Log($"StageManager: プレイヤーを生成しました。位置: {spawnPos}");
 
-            // 生成されたPlayerコンポーネントを起点に通知を発行
-            var player = _currentPlayerInstance.GetComponentInChildren<Player>();
-            if (player != null)
-            {
-                _onPlayerSpawned.OnNext(player.transform);
-            }
-        }
-        else
+        // 生成されたPlayerコンポーネントを起点に通知を発行
+        var player = _currentPlayerInstance.GetComponentInChildren<Player>();
+        if (player != null)
         {
-            Debug.LogError("StageManager: StageDatabase に PlayerParentPrefab が設定されていません。これが原因でプレイヤーが生成されません。");
+            _onPlayerSpawned.OnNext(player.transform);
         }
     }
 
