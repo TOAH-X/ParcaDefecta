@@ -33,7 +33,7 @@ public class StageTransitionPortal : MonoBehaviour
         if (transitionToNextStage)
         {
             Debug.Log("StageTransitionPortal: 次のステージへの遷移を開始します。");
-            StageManager.Instance.AdvanceToNextStage();
+            GameFlowManager.Instance.AdvanceToNextStage();
         }
         else
         {
@@ -45,7 +45,7 @@ public class StageTransitionPortal : MonoBehaviour
             }
 
             Debug.Log($"StageTransitionPortal: ステージ '{targetStageId}' への遷移を開始します。");
-            StageManager.Instance.LoadStage(targetStageId);
+            GameFlowManager.Instance.ChangeStage(targetStageId);
         }
     }
 

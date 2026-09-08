@@ -11,9 +11,9 @@ public class StageResetUIBridge : MonoBehaviour
     public void OnResetButtonClick()
     {
         // 必要に応じてここでポーズ解除やSE再生などの演出を挟むことも可能です
-        if (StageManager.Instance != null)
+        if (GameFlowManager.Instance != null)
         {
-            StageManager.Instance.ReloadCurrentStage();
+            GameFlowManager.Instance.ReloadCurrentStage();
         }
     }
 }

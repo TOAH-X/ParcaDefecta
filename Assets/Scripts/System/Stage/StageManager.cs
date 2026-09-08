@@ -106,25 +106,52 @@ public class StageManager : Singleton<StageManager>
         return database?.GetFirstStageId();
     }
 
+    /// <summary>
+    /// 次のステージへ進みます。完了を待たない版。
+    /// </summary>
     public void AdvanceToNextStage()
     {
-        if (database == null) return;
-        string nextId = database.GetNextStageId(currentStageId);
-        if (!string.IsNullOrEmpty(nextId)) LoadStage(nextId);
-        else Debug.Log("全ステージをクリアしました！");
+        AdvanceToNextStageAsync().Forget();
     }
 
     /// <summary>
-    /// 現在のステージを最初からやり直します。
+    /// 次のステージへ進みます。完了まで待てます。次が無ければ何もしません。
+    /// </summary>
+    public async UniTask AdvanceToNextStageAsync()
+    {
+        await EnsureDatabaseLoadedAsync();
+        if (database == null) return;
+
+        string nextId = database.GetNextStageId(currentStageId);
+        if (string.IsNullOrEmpty(nextId))
+        {
+            Debug.Log("全ステージをクリアしました！");
+            return;
+        }
+
+        await LoadStageAsync(nextId);
+    }
+
+    /// <summary>
+    /// 現在のステージを最初からやり直します。完了を待たない版。
     /// </summary>
     public void ReloadCurrentStage()
+    {
+        ReloadCurrentStageAsync().Forget();
+    }
+
+    /// <summary>
+    /// 現在のステージを最初からやり直します。完了まで待てます。
+    /// </summary>
+    public async UniTask ReloadCurrentStageAsync()
     {
         if (string.IsNullOrEmpty(currentStageId))
         {
             Debug.LogWarning("StageManager: リロード対象のステージIDが設定されていません。");
             return;
         }
-        LoadStage(currentStageId);
+
+        await LoadStageAsync(currentStageId);
     }
 
     /// <summary>
