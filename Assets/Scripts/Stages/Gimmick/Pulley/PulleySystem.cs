@@ -439,8 +439,11 @@ public class PulleySystem : MonoBehaviour
             else if (y < -0.5f) roomDown = Mathf.Min(roomDown, room);
         }
 
-        // ストッパー。左右の位置が重なるストッパーの箱までの距離が余地になる
+        // 足場の上に、足場以外に支えられたものがあれば、その足元までしか上がれない（仕様 J49）
         PulleyNode node = route[index].node;
+        roomUp = Mathf.Min(roomUp, node.BlockedRoomUp);
+
+        // ストッパー。左右の位置が重なるストッパーの箱までの距離が余地になる
         node.GetBox(out Vector2 boxMin, out Vector2 boxMax);
         foreach (PulleyStopper stopper in PulleyStopper.ActiveStoppers)
         {

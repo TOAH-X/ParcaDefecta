@@ -44,6 +44,11 @@ public abstract class PulleyNode : MonoBehaviour
     public virtual int Weight => weight + (platform != null ? platform.CurrentWeight : 0);
 
     /// <summary>
+    /// 足場の上に、足場以外に支えられたものがあるとき、あとどれだけ上がれるか。無ければ無限大（仕様 J49）。
+    /// </summary>
+    public float BlockedRoomUp => platform != null ? platform.BlockedRoomUp : float.PositiveInfinity;
+
+    /// <summary>
     /// 紐が取り付く位置。端は自身の位置、滑車は中心。
     /// 動く部品は、実行中は PulleySystem が決めた計算上の位置を返す。
     /// Rigidbody で動かす部品は Transform への反映が物理更新まで遅れるため、Transform を読むと紐の長さが合わなくなる。
@@ -108,7 +113,7 @@ public abstract class PulleyNode : MonoBehaviour
     /// </summary>
     public void ReadInputs(float dt)
     {
-        if (platform != null) platform.Detect(dt);
+        if (platform != null) platform.Detect(dt, AnchorPosition);
     }
 
     /// <summary>
