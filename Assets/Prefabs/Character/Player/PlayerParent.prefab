@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 613552283749301821}
   - component: {fileID: 368007630927340977}
   - component: {fileID: 1135699357205747077}
+  - component: {fileID: 7594408116587382664}
   m_Layer: 0
   m_Name: AlterPlayer
   m_TagString: Player
@@ -239,7 +240,6 @@ MonoBehaviour:
   alterPlayerMover: {fileID: 368007630927340977}
   spriteRenderer: {fileID: 5831127130748701526}
   syncDelaySeconds: 1
-  separationDuration: 5
 --- !u!114 &368007630927340977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,6 +268,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AlterPlayerAnimation
   alterPlayerMover: {fileID: 368007630927340977}
   animator: {fileID: 8775953216349406161}
+--- !u!114 &7594408116587382664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3117465060353165617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be4ad87e993239648b401fa99e84fd1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeightHolder
+  weight: 2
 --- !u!1 &4415928886360904857
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,6 +350,7 @@ GameObject:
   - component: {fileID: 8889705233417701685}
   - component: {fileID: 6743028822355704180}
   - component: {fileID: 7887014643008106557}
+  - component: {fileID: 4917713219255292483}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -632,6 +646,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSeparation
   coolTime: 6
+  separationDuration: 5
+  inertialSpeed: 5
   alterPlayer: {fileID: 613552283749301821}
   playerMoverHistory: {fileID: 2856170947875069508}
 --- !u!114 &7887014643008106557
@@ -653,6 +669,19 @@ MonoBehaviour:
   syncDelaySeconds: 1
   startAlpha: 0.1
   endAlpha: 0.025
+--- !u!114 &4917713219255292483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745288673444044554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be4ad87e993239648b401fa99e84fd1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeightHolder
+  weight: 2
 --- !u!1 &7761547945666335760
 GameObject:
   m_ObjectHideFlags: 0
