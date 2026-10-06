@@ -180,7 +180,10 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     {
         transform.position = pos;
         transform.rotation = rot;
-        //rb2D.velocity = Vector2.zero; // テレポート後の慣性をリセット
+
+        // テレポート後の勢いをリセットする。
+        // 残すと、ジャンプの速度を持ったまま過去の位置(空中)へ飛べてしまい、繰り返すと高さが積み上がる
+        rb2D.linearVelocity = Vector2.zero;
     }
 
     /// <summary>
