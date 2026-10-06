@@ -41,6 +41,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 先に入力を読み、このフレームの値で判断する
+        playerInputReader.Read();
+
         // リトライ入力はポーズ中でも受け付ける
         if (playerInputReader.RetryPressed)
         {

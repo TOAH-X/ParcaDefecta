@@ -42,8 +42,11 @@ public class PlayerInputReader : MonoBehaviour
         retryAction = InputSystem.actions["Retry"];
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// 入力を読み直す。Player が Update の先頭で呼ぶ。
+    /// 自分の Update で読むと、Player との実行順によって前のフレームの値を使うことがあるため、読む側が明示的に呼ぶ。
+    /// </summary>
+    public void Read()
     {
         /*
         // 入力キーの取得

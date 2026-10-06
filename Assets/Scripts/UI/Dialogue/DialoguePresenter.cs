@@ -17,8 +17,8 @@ public class DialoguePresenter : MonoBehaviour
     [Header("タップで送るためのボタン(ウィンドウ全体を覆う)")]
     [SerializeField] private Button advanceButton;
 
-    // 送りの入力アクション名（InputSystem_Actions の UI マップ）。入力周りの整理で見直す(暫定)
-    private const string AdvanceActionName = "Advance";
+    // 送りの入力アクション（InputSystem_Actions の Dialogue マップ）
+    private const string AdvanceActionName = "Dialogue/Advance";
 
     // OnDisable 時に Instance を叩くと終了処理中に再生成される恐れがあるため、購読時の参照を保持する
     private DialogueManager manager;

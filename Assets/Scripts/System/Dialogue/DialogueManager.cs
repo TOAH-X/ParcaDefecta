@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Scripting;
 using Cysharp.Threading.Tasks;
 using ParcaDefecta.System;
@@ -14,7 +13,7 @@ using ParcaDefecta.System;
 ///   OnLineRequested(行) → [Typing: View が文字を送る] → NotifyLineShown() → [WaitingAdvance: 送り待ち] → Advance() → 次の行
 ///   Typing 中に Advance() が来たら OnCompleteRequested で「全部出して」を依頼し、View が出し終えたら NotifyLineShown() で WaitingAdvance になる。
 ///
-/// 会話中はゲームを止める。PauseManager でポーズし、Player の入力マップを無効にする。
+/// 会話中はゲームを止める。PauseManager でポーズする(Player はポーズ中は入力を読まない)。
 ///
 /// 使い方:
 ///   await DialogueManager.Instance.PlayAsync(data); // 会話が終わるまで待てる
@@ -29,9 +28,6 @@ public class DialogueManager : Singleton<DialogueManager>
         Typing,         // 行を表示中(文字送りの途中)
         WaitingAdvance, // 行を全部出し、送りを待っている
     }
-
-    // 会話中に無効にする入力マップの名前。入力周りの整理で見直す(暫定)
-    private const string PlayerActionMapName = "Player";
 
     // 実行時確認用(Inspector で現在の状態を観察する)
     [SerializeField] private DialogueState state = DialogueState.Idle;
@@ -189,44 +185,29 @@ public class DialogueManager : Singleton<DialogueManager>
     }
 
     /// <summary>
-    /// 会話中のゲーム停止。ポーズして時間を止め、Player の入力マップを無効にする。
-    /// 入力マップの扱いは暫定で、入力周りの整理のときに見直す。
+    /// 会話中のゲーム停止。ポーズして時間を止める。Player はポーズ中は入力を読まないので、これだけで操作が止まる。
+    /// 解除は次のフレームに回す。最後の送りのキー(ゲームパッド A など)はジャンプと同じなので、
+    /// 同じフレームで解除すると Player がそのキーをジャンプとして拾ってしまう。
     /// </summary>
     private void SetGameStopped(bool stopped)
     {
-        if (PauseManager.Instance != null)
-        {
-            if (stopped) PauseManager.Instance.Pause();
-            else PauseManager.Instance.Resume();
-        }
-
         if (stopped)
         {
-            SetPlayerInputEnabled(false);
+            PauseManager.Instance.Pause();
         }
         else
         {
-            // 最後の送りの押下を Player の入力(ジャンプなど)が同じフレームで拾わないよう、戻すのは次のフレーム
-            RestorePlayerInputNextFrameAsync().Forget();
+            ResumeNextFrameAsync().Forget();
         }
     }
 
-    private async UniTaskVoid RestorePlayerInputNextFrameAsync()
+    private async UniTaskVoid ResumeNextFrameAsync()
     {
         await UniTask.Yield(PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
 
         // 待っている間に次の会話が始まっていたら、そちらが止めたままにする
         if (IsPlaying) return;
-        SetPlayerInputEnabled(true);
-    }
-
-    private static void SetPlayerInputEnabled(bool enabled)
-    {
-        InputActionMap map = InputSystem.actions?.FindActionMap(PlayerActionMapName);
-        if (map == null) return;
-
-        if (enabled) map.Enable();
-        else map.Disable();
+        PauseManager.Instance.Resume();
     }
 
     // ---- デバッグ用 ----
