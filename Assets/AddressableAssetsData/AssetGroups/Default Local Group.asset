@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d56095cf46ceb64c99cc2f34219593e
+    m_Address: DialogueCanvas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81c637ac5c0e44e9bfcd3870684b80ae
     m_Address: TransitionCanvas
     m_ReadOnly: 0

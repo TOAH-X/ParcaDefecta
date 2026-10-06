@@ -69,6 +69,9 @@ public class GameFlowManager : Singleton<GameFlowManager>
         IsStarting = true;
         try
         {
+            // 会話が出ていれば閉じる。ステージごと入れ替わるので、会話ウィンドウだけ残らないようにする
+            DialogueManager.Instance.Cancel();
+
             // シーン切替とステージ配置を 1 枚の暗幕で包む。
             // 内側で SceneLoader が掛ける暗幕は参照カウントで合流するため、ステージ配置が終わるまで開かない
             await TransitionManager.Instance.RunWithTransitionAsync(async () =>
@@ -160,6 +163,9 @@ public class GameFlowManager : Singleton<GameFlowManager>
         IsChangingStage = true;
         try
         {
+            // 会話が出ていれば閉じる。ステージごと入れ替わるので、会話ウィンドウだけ残らないようにする
+            DialogueManager.Instance.Cancel();
+
             await TransitionManager.Instance.RunWithTransitionAsync(changeAction, StageTransitionType);
         }
         finally

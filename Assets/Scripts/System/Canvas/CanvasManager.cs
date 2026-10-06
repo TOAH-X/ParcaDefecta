@@ -19,6 +19,7 @@ public class CanvasManager : Singleton<CanvasManager>
     {
         AddressableKeys.NotificationCanvas,
         AddressableKeys.TransitionCanvas,
+        AddressableKeys.DialogueCanvas,
     };
 
     protected override void Awake()

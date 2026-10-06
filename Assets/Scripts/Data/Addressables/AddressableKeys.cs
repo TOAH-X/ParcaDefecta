@@ -9,4 +9,5 @@ public static class AddressableKeys
     public const string StageDatabase = "StageDatabase";
     public const string NotificationCanvas = "NotificationCanvas";
     public const string TransitionCanvas = "TransitionCanvas";
+    public const string DialogueCanvas = "DialogueCanvas";
 }
