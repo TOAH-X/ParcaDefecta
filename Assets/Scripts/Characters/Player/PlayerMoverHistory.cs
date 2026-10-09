@@ -8,26 +8,19 @@ public class PlayerMoverHistory : MonoBehaviour
     [SerializeField] private int frameDelay = 60;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
-    // セグメント化された履歴データ
-    private List<List<PlayerFrameData>> segments = new List<List<PlayerFrameData>>();
+    // セグメント化された履歴データ。
+    // 最初の空セグメントはフィールド初期化で用意する(Start だと、生成直後の LateUpdate が
+    // Start より先に走るケースや、Play 中の再コンパイル後に初期化が消えるケースで空のままになる)。
+    private List<List<PlayerFrameData>> segments = new List<List<PlayerFrameData>> { new List<PlayerFrameData>() };
     public IReadOnlyList<IReadOnlyList<PlayerFrameData>> Segments => segments;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        segments.Add(new List<PlayerFrameData>());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     void LateUpdate()
     {
         // ポーズ中は履歴を記録しない
         if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
+
+        // 念のための保険。セグメントが無ければ 1 つ用意する
+        if (segments.Count == 0) segments.Add(new List<PlayerFrameData>());
 
         // 今フレームのデータを記録
         PlayerFrameData frameData = new PlayerFrameData
