@@ -8,10 +8,28 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
 {
     [SerializeField] private Rigidbody2D rb2D;
     [SerializeField] private BoxCollider2D boxCollider2D;
+    [SerializeField] private GroundChecker groundChecker;
+    [SerializeField] private JumpTracker jumpTracker;
 
     // 移動中か(run)
     private bool isMoving;
     public bool IsMoving => isMoving;
+
+    // 分離されているか
+    private bool isSeparated;
+    public bool IsSeparated => isSeparated;
+
+    // 接地しているか(grounded)
+    public bool IsGrounded => groundChecker.Check();
+
+    // ジャンプ中か(jumping)。打ち上げられてから着地するまで
+    public bool IsJumping => jumpTracker.IsJumping;
+
+    // 下向きに動いているか(falling)
+    public bool IsFalling => rb2D.linearVelocity.y < -0.01f;
+
+    // 打ち上げられた瞬間の通知
+    public event Action OnLaunched;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +46,10 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
     // true=分離されたのでDynamicに、false=同期しているのでtransformに
     public void SetState(bool isSeparated)
     {
+        this.isSeparated = isSeparated;
+        // 前回の分離中の空中の状態が残らないようにする
+        jumpTracker.Clear();
+
         if (isSeparated == true)
         {
             UnFreeze();
@@ -46,6 +68,8 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
         {
             isMoving = true;
         }
+        // 向きは 1 秒前のプレイヤーのままなので、進む方向に合わせる
+        Face(direction.x);
 
         float timer = duration;
         try
@@ -78,6 +102,16 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
         }
     }
 
+    // 向きの変更(進む方向を向く)
+    private void Face(float directionX)
+    {
+        if (directionX == 0f) return;
+
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Sign(directionX) * Mathf.Abs(scale.x);
+        transform.localScale = scale;
+    }
+
     // RigidBodyをStaticに
     public void Freeze()
     {
@@ -99,5 +133,7 @@ public class AlterPlayerMover : MonoBehaviour, ILaunchable
     {
         // 垂直速度を直接上書きして打ち上げる
         rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, force);
+        jumpTracker.Begin();
+        OnLaunched?.Invoke();
     }
 }

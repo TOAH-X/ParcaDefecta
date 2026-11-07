@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using R3;
 using ParcaDefecta.System;
@@ -8,13 +9,12 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     [SerializeField] float moveSpeed = 7.5f;
     [Header("ジャンプ力")]
     [SerializeField] float jumpForce = 12.0f;
-    [Header("LayerのGround")]
-    [SerializeField] LayerMask groundLayer;
     [Header("コヨーテタイム (秒)")]
     [SerializeField] float coyoteTime = 0.1f;
 
     [SerializeField] Rigidbody2D rb2D;
-    [SerializeField] BoxCollider2D boxCollider;
+    [SerializeField] GroundChecker groundChecker;
+    [SerializeField] JumpTracker jumpTracker;
 
     // 移動ベクトル
     private Vector2 moveDirection;
@@ -26,9 +26,18 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     private bool isMoving;
     public bool IsMoving => isMoving;
 
-    // ジャンプ中か(jump)
-    private bool isJumping;
-    public bool IsJumping => isJumping;
+    // ジャンプ中か(jumping)
+    public bool IsJumping => jumpTracker.IsJumping;
+
+    // 跳んだ瞬間の通知(ジャンプと打ち上げの両方)
+    public event Action OnJumped;
+
+    // 接地しているか(grounded)
+    private bool isGrounded;
+    public bool IsGrounded => isGrounded;
+
+    // 下向きに動いているか(falling)
+    public bool IsFalling => rb2D.linearVelocity.y < -0.01f;
 
     // コヨーテタイム用のカウンター
     public float coyoteCounter;
@@ -49,16 +58,11 @@ public class PlayerMover : MonoBehaviour, ILaunchable
     /// </summary>
     private void PerformUpdate(float dt)
     {
-        bool grounded = IsGrounding();
+        isGrounded = groundChecker.Check();
 
-        if (grounded)
+        if (isGrounded)
         {
             coyoteCounter = coyoteTime; // 接地中は常にタイマーを満タンにする
-            // ジャンプ中かつ、落下中または静止しており、地面に接地した瞬間にフラグを解除
-            if (isJumping && rb2D.linearVelocity.y <= 0.01f)
-            {
-                isJumping = false;
-            }
         }
         else
         {
@@ -143,7 +147,7 @@ public class PlayerMover : MonoBehaviour, ILaunchable
         if (TimeManager.Instance != null && TimeManager.Instance.IsPaused.Value) return;
 
         // コヨーテタイム内（coyoteCounter > 0）かつ、すでにジャンプ中でない場合
-        if (coyoteCounter > 0f && !isJumping)
+        if (coyoteCounter > 0f && !jumpTracker.IsJumping)
         {
             // 崖から歩いて落ちている最中のコヨーテジャンプを安定させるため、垂直速度をリセット
             if (rb2D.linearVelocity.y < 0)
@@ -153,26 +157,10 @@ public class PlayerMover : MonoBehaviour, ILaunchable
 
             // 通常ジャンプ
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            isJumping = true;
+            jumpTracker.Begin();
             coyoteCounter = 0f; // 二重ジャンプ防止のためにカウンターをゼロにする
+            OnJumped?.Invoke();
         }
-    }
-
-    // 地面との接地判定
-    private bool IsGrounding()
-    {
-        Vector2 thisSize = new Vector2(Mathf.Abs(this.transform.localScale.x), Mathf.Abs(this.transform.localScale.y));
-        float sizeRate = 0.9f;
-        float rayLength = boxCollider.size.x * thisSize.x;
-
-        Vector2 direction = transform.right * thisSize.x * sizeRate;
-        Vector2 startPos = transform.position + new Vector3(((1 - sizeRate) * thisSize.x - rayLength) / 2, -boxCollider.size.y * thisSize.y / 2 - 0.1f, 0);
-
-        // デバッグ表示
-        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, rayLength, groundLayer);
-        Debug.DrawRay(startPos, direction, Color.orangeRed);
-
-        return hit.collider != null;
     }
 
     // 座標を直接変更（テレポート用）
@@ -199,7 +187,8 @@ public class PlayerMover : MonoBehaviour, ILaunchable
 
         // ジャンプ状態としてマークし、コヨーテタイムを終了させることで
         // 同じフレーム内でのジャンプ入力の重複適用を防ぐ
-        isJumping = true;
+        jumpTracker.Begin();
         coyoteCounter = 0f;
+        OnJumped?.Invoke();
     }
 }

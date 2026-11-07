@@ -48,6 +48,8 @@ GameObject:
   - component: {fileID: 368007630927340977}
   - component: {fileID: 1135699357205747077}
   - component: {fileID: 7594408116587382664}
+  - component: {fileID: 2339455502908858527}
+  - component: {fileID: 1289236684533456095}
   m_Layer: 0
   m_Name: AlterPlayer
   m_TagString: Player
@@ -119,15 +121,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 7180d1b25fae98d4f9e9dc23a194d79c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!50 &4950266859498864615
 Rigidbody2D:
@@ -254,6 +256,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AlterPlayerMover
   rb2D: {fileID: 4950266859498864615}
   boxCollider2D: {fileID: 1519548906041073058}
+  groundChecker: {fileID: 2339455502908858527}
+  jumpTracker: {fileID: 1289236684533456095}
 --- !u!114 &1135699357205747077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,6 +272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AlterPlayerAnimation
   alterPlayerMover: {fileID: 368007630927340977}
   animator: {fileID: 8775953216349406161}
+  airDelay: 0.1
 --- !u!114 &7594408116587382664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +286,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeightHolder
   weight: 2
+--- !u!114 &2339455502908858527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3117465060353165617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24abc68eb004b1b4bb10b9ddc3b65449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GroundChecker
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  boxCollider: {fileID: 1519548906041073058}
+--- !u!114 &1289236684533456095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3117465060353165617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7b3a70da5f656438d73e114e24cd73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JumpTracker
+  jumpLandGuardTime: 0.1
+  groundChecker: {fileID: 2339455502908858527}
 --- !u!1 &4415928886360904857
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,6 +386,8 @@ GameObject:
   - component: {fileID: 6743028822355704180}
   - component: {fileID: 7887014643008106557}
   - component: {fileID: 4917713219255292483}
+  - component: {fileID: 8426846180215093495}
+  - component: {fileID: 6822899859993000579}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -422,9 +459,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 5a005bd3ce69e9f44b06e4db7fbabd08, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7180d1b25fae98d4f9e9dc23a194d79c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -570,12 +607,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMover
   moveSpeed: 7.5
   jumpForce: 15
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
   coyoteTime: 0.1
   rb2D: {fileID: 8293646080182067373}
-  boxCollider: {fileID: 3589554941523489888}
+  groundChecker: {fileID: 8426846180215093495}
+  jumpTracker: {fileID: 6822899859993000579}
   coyoteCounter: 0
 --- !u!114 &7698874484043915585
 MonoBehaviour:
@@ -603,6 +638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   animator: {fileID: 4860597894554981763}
   playerMover: {fileID: 2607775265482914274}
+  airDelay: 0.1
 --- !u!114 &2856170947875069508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,6 +718,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeightHolder
   weight: 2
+--- !u!114 &8426846180215093495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745288673444044554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24abc68eb004b1b4bb10b9ddc3b65449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GroundChecker
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  boxCollider: {fileID: 3589554941523489888}
+--- !u!114 &6822899859993000579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745288673444044554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7b3a70da5f656438d73e114e24cd73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JumpTracker
+  jumpLandGuardTime: 0.1
+  groundChecker: {fileID: 8426846180215093495}
 --- !u!1 &7761547945666335760
 GameObject:
   m_ObjectHideFlags: 0
