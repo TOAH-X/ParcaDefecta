@@ -92,10 +92,6 @@ public class Player : MonoBehaviour
         if (IsPaused()) return;
         if (!isOperable) return;
         teleportation.Execute();
-
-        // SoundManager.Instance.PlayBgm("A", 0.5f);
-        // AchievementManager.Instance.NotifyProgress(AchievementType.JumpCount, 1); // ジャンプ回数の実績進捗を通知
-        GameFlowManager.Instance.StartGame("1");
     }
 
     public void OnSeparationButtonClick()

@@ -6,6 +6,12 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Scripting;
 
+/// <summary>
+/// 実績の進捗と解除を管理するマネージャー。
+///
+/// 使い方:
+///   AchievementManager.Instance.NotifyProgress(AchievementType.JumpCount, 1); // ジャンプ回数の実績進捗を通知
+/// </summary>
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class AchievementManager : Singleton<AchievementManager>, ISaveable
 {

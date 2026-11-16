@@ -5,6 +5,12 @@ using System;
 using System.Threading;
 using UnityEngine.Scripting;
 
+/// <summary>
+/// BGM と SE の再生を受け持つマネージャー。
+///
+/// 使い方:
+///   SoundManager.Instance.PlayBgm("A", 0.5f); // BGM "A" を 0.5 秒かけて再生
+/// </summary>
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class SoundManager : Singleton<SoundManager>
 {
