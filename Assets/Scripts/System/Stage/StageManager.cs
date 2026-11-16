@@ -21,6 +21,26 @@ public class StageManager : Singleton<StageManager>
     private GameObject _currentStageInstance;
     private GameObject _currentPlayerInstance;
 
+    /// <summary>
+    /// 今置かれているステージ。無ければ null。
+    /// 通知（OnStageSpawned）より後に受け取りを始める部品が、今の状態を知るために使う。
+    /// </summary>
+    public StageData CurrentStage => _currentStageInstance != null ? _currentStageInstance.GetComponent<StageData>() : null;
+
+    /// <summary>
+    /// 今の Player の Transform（OnPlayerSpawned で渡すものと同じ）。無ければ null。
+    /// 通知（OnPlayerSpawned）より後に受け取りを始める部品が、今の状態を知るために使う。
+    /// </summary>
+    public Transform CurrentPlayer
+    {
+        get
+        {
+            if (_currentPlayerInstance == null) return null;
+            var player = _currentPlayerInstance.GetComponentInChildren<Player>();
+            return player != null ? player.transform : null;
+        }
+    }
+
     private bool _isLoading;
     private bool _isDatabaseLoading;
 
