@@ -59,10 +59,13 @@ public class CinemachineTargetUpdater : MonoBehaviour
     }
 
     /// <summary>
-    /// 追従対象を Player にする。
+    /// 追従対象を、Player が指定するカメラの注目点（Player.CameraFocus）にする。
+    /// 何を見るかは Player 側が決める（StageData がカメラの範囲を持つのと同じ考え方）。
     /// </summary>
-    private void ApplyPlayer(Transform targetTransform)
+    private void ApplyPlayer(Transform playerTransform)
     {
+        Transform targetTransform = playerTransform.TryGetComponent<Player>(out var player) ? player.CameraFocus : playerTransform;
+
         vcam.Follow = targetTransform;
         vcam.LookAt = targetTransform;
         // 前の位置を忘れさせ、次の更新で新しい Player の位置へ瞬時に移す。

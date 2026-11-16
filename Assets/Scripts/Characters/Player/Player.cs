@@ -15,6 +15,13 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerSeparation separation;
     [SerializeField] PlayerDeath death;
 
+    [Header("Camera")]
+    [SerializeField, Tooltip("カメラに見てほしい点。本体と分身をまとめた注目点(PlayerFocusPoint)を設定する。未設定なら Player 自身")]
+    Transform cameraFocus;
+
+    /// <summary>カメラの追従先。未設定なら Player 自身</summary>
+    public Transform CameraFocus => cameraFocus != null ? cameraFocus : transform;
+
     // クールタイム
     public float TeleportationCoolTime => teleportation.CoolTime;
     public float UseTeleportationTimer => teleportation.CurrentTimer;

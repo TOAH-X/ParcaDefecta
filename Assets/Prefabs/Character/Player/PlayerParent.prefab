@@ -583,6 +583,7 @@ MonoBehaviour:
   teleportation: {fileID: 8889705233417701685}
   separation: {fileID: 6743028822355704180}
   death: {fileID: 2416349657376112942}
+  cameraFocus: {fileID: 2464896282543013331}
 --- !u!114 &9065968701428105908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,7 +817,7 @@ MonoBehaviour:
     Weight: 1
     Radius: 1
   - Object: {fileID: 6719837942395725324}
-    Weight: 1
+    Weight: 0
     Radius: 0.1
   m_LegacyTargets: []
 --- !u!1 &8806386904738557018
