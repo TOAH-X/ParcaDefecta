@@ -388,6 +388,7 @@ GameObject:
   - component: {fileID: 4917713219255292483}
   - component: {fileID: 8426846180215093495}
   - component: {fileID: 6822899859993000579}
+  - component: {fileID: 2416349657376112942}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -581,6 +582,7 @@ MonoBehaviour:
   playerMoverHistory: {fileID: 2856170947875069508}
   teleportation: {fileID: 8889705233417701685}
   separation: {fileID: 6743028822355704180}
+  death: {fileID: 2416349657376112942}
 --- !u!114 &9065968701428105908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,6 +750,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JumpTracker
   jumpLandGuardTime: 0.1
   groundChecker: {fileID: 8426846180215093495}
+--- !u!114 &2416349657376112942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745288673444044554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1574bc359a178cf4397bb6912706189b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDeath
+  deathHeight: -500
+  delayBeforeRestart: 0.3
 --- !u!1 &7761547945666335760
 GameObject:
   m_ObjectHideFlags: 0

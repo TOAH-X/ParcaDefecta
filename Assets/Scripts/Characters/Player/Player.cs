@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [Header("Abilities")]
     [SerializeField] PlayerTeleportation teleportation;
     [SerializeField] PlayerSeparation separation;
+    [SerializeField] PlayerDeath death;
 
     // クールタイム
     public float TeleportationCoolTime => teleportation.CoolTime;
@@ -22,6 +23,9 @@ public class Player : MonoBehaviour
 
     // 操作可能か
     private bool isOperable = true;
+
+    // 実際に操作を受け付けるか。操作可能で、かつ死亡していないとき
+    private bool CanOperate => isOperable && !(death != null && death.IsDead);
 
 
     // シングルトンの初期化はAwakeで行うのが最も安全です
@@ -54,7 +58,7 @@ public class Player : MonoBehaviour
         // ポーズ中は他の入力を受け付けない
         if (IsPaused()) return;
 
-        if (isOperable == true)
+        if (CanOperate)
         {
             PlayerControl();
         }
@@ -90,14 +94,14 @@ public class Player : MonoBehaviour
     public void OnTeleportationButtonClick()
     {
         if (IsPaused()) return;
-        if (!isOperable) return;
+        if (!CanOperate) return;
         teleportation.Execute();
     }
 
     public void OnSeparationButtonClick()
     {
         if (IsPaused()) return;
-        if (!isOperable) return;
+        if (!CanOperate) return;
         // 現在の入力値を渡して実行
         separation.Execute(playerInputReader.MoveInput);
     }
@@ -106,7 +110,7 @@ public class Player : MonoBehaviour
     public void OnJumpButtonClick()
     {
         if (IsPaused()) return;
-        if (!isOperable) return;
+        if (!CanOperate) return;
         playerMover.Jump();
     }
 
