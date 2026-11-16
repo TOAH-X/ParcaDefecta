@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4138000854196822129}
   m_Layer: 0
-  m_Name: WarpSet
+  m_Name: WarpSet_OneWay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
