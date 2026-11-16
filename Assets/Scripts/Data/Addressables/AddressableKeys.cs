@@ -7,6 +7,7 @@ public static class AddressableKeys
     public const string AchievementDatabase = "AchievementDatabase";
     public const string SoundDatabase = "SoundDatabase";
     public const string StageDatabase = "StageDatabase";
+    public const string SceneDatabase = "SceneDatabase";
     public const string NotificationCanvas = "NotificationCanvas";
     public const string TransitionCanvas = "TransitionCanvas";
     public const string DialogueCanvas = "DialogueCanvas";

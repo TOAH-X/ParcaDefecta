@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
 using Cysharp.Threading.Tasks;
 
@@ -9,20 +8,18 @@ using Cysharp.Threading.Tasks;
 /// 「いつ・どのシーンでステージを置くか」はここが決め、StageManager は ID を受けて生成するだけにする。
 /// 扱う手順は「ゲーム開始（ゲームシーンへ切り替えてステージを置く）」と「ステージ切替（次へ・指定・やり直し）」。
 /// どちらも暗幕（TransitionManager）で隠している間に StageManager を呼ぶ。StageManager は暗幕を知らない。
+/// 「ステージを置くシーン」は、シーンの種類が Game か Debug のシーン（SceneDatabase で登録）。
 ///
 /// 使い方:
-///   GameFlowManager.Instance.StartGame();          // 先頭ステージで開始
-///   GameFlowManager.Instance.StartGame("Stage02"); // 指定ステージで開始
+///   GameFlowManager.Instance.StartGame();          // 先頭ステージで開始（ゲームシーンにいなければ Game のシーンへ移る）
 ///   GameFlowManager.Instance.AdvanceToNextStage(); // 次のステージへ
 ///   GameFlowManager.Instance.ReloadCurrentStage(); // 現在のステージをやり直す
 ///   await GameFlowManager.Instance.StartGameAsync(); // 完了を待ちたい場合は Async 版
+/// ボタンから呼ぶときは GameFlowUIBridge を使う。
 /// </summary>
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class GameFlowManager : Singleton<GameFlowManager>
 {
-    // ゲームシーン名。シーン名の台帳（SceneKeys）を作ったらそちらへ移す（暫定）
-    private const string GameSceneName = "DebugScene";
-
     // 暗幕の種類。ゲーム開始はシーン切替と同じ Fade、ステージ切替は Wipe
     private const TransitionManager.TransitionType StartTransitionType = TransitionManager.TransitionType.Fade;
     private const TransitionManager.TransitionType StageTransitionType = TransitionManager.TransitionType.Wipe;
@@ -36,29 +33,30 @@ public class GameFlowManager : Singleton<GameFlowManager>
     /// <summary>開始処理中またはステージ切替中なら true。新しい要求はこの間無視される</summary>
     public bool IsBusy => IsStarting || IsChangingStage;
 
-    private void Start()
+    private async void Start()
     {
         // エディタでゲームシーンを直接 Play した場合の吸収。
         // DontDestroyOnLoad のため起動時に 1 回だけ走り、タイトル経由の遷移では発火しない
-        if (IsInGameScene())
+        if (await IsInStageSceneAsync())
         {
             StartGame();
         }
     }
 
     /// <summary>
-    /// ゲームを開始する。ID が空なら先頭ステージ、指定があればそのステージ。完了を待たない版。
+    /// ゲームを先頭ステージから開始する。完了を待たない版。
     /// </summary>
-    public void StartGame(string stageId = null)
+    public void StartGame()
     {
-        StartGameAsync(stageId).Forget();
+        StartGameAsync().Forget();
     }
 
     /// <summary>
-    /// ゲームを開始する。ID が空なら先頭ステージ、指定があればそのステージ。完了まで待てます。
-    /// ゲームシーン以外にいる場合はゲームシーンへ切り替えてからステージを置く。
+    /// ゲームを先頭ステージから開始する。完了まで待てます。
+    /// ステージを置くシーン以外にいる場合は、Game のシーンへ切り替えてからステージを置く。
+    /// どのステージから始めるかは引数で受け取らない（将来は StageSessionManager に持たせて、ここで読む予定）。
     /// </summary>
-    public async UniTask StartGameAsync(string stageId = null)
+    public async UniTask StartGameAsync()
     {
         if (IsBusy)
         {
@@ -76,24 +74,21 @@ public class GameFlowManager : Singleton<GameFlowManager>
             // 内側で SceneLoader が掛ける暗幕は参照カウントで合流するため、ステージ配置が終わるまで開かない
             await TransitionManager.Instance.RunWithTransitionAsync(async () =>
             {
-                // ゲームシーンへ移動
-                if (!IsInGameScene())
+                // ステージを置くシーンへ移動
+                if (!await IsInStageSceneAsync())
                 {
-                    await SceneLoader.Instance.ChangeSceneAsync(GameSceneName);
+                    await SceneLoader.Instance.ChangeSceneAsync(SceneType.Game);
 
                     // SceneLoader が遷移中で要求を無視した場合など、移動できていなければ中断する
-                    if (!IsInGameScene())
+                    if (!await IsInStageSceneAsync())
                     {
-                        Debug.LogWarning($"[GameFlowManager] '{GameSceneName}' へ移動できなかったため開始を中断します");
+                        Debug.LogWarning($"[GameFlowManager] 種類 '{SceneType.Game}' のシーンへ移動できなかったため開始を中断します");
                         return;
                     }
                 }
 
-                // ステージ ID の決定
-                if (string.IsNullOrEmpty(stageId))
-                {
-                    stageId = await StageManager.Instance.GetFirstStageIdAsync();
-                }
+                // 先頭ステージの ID
+                string stageId = await StageManager.Instance.GetFirstStageIdAsync();
                 if (string.IsNullOrEmpty(stageId))
                 {
                     Debug.LogError("[GameFlowManager] 開始するステージ ID を決められませんでした。StageDatabase を確認してください");
@@ -174,8 +169,13 @@ public class GameFlowManager : Singleton<GameFlowManager>
         }
     }
 
-    private static bool IsInGameScene()
+    /// <summary>
+    /// 今いるシーンが「ステージを置くシーン」（種類が Game か Debug）なら true。
+    /// SceneDatabase に登録されていないシーンは false。
+    /// </summary>
+    private static async UniTask<bool> IsInStageSceneAsync()
     {
-        return SceneManager.GetActiveScene().name == GameSceneName;
+        SceneType? type = await SceneLoader.Instance.GetCurrentSceneTypeAsync();
+        return type == SceneType.Game || type == SceneType.Debug;
     }
 }

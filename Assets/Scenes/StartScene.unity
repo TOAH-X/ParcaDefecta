@@ -478,12 +478,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 284639711}
-        m_TargetAssemblyTypeName: ParcaDefecta.System.Scene.SceneLoadButton, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 1
+        m_TargetAssemblyTypeName: GameFlowUIBridge, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -536,11 +536,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 284639706}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c89a5e9f89ddac24499579db0b6e1fc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e33c70536c87f64a9d0e8a562defbbd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ParcaDefecta.System.Scene.SceneLoadButton
-  sceneName: DebugScene
-  transitionType: 1
+  m_EditorClassIdentifier: Assembly-CSharp::GameFlowUIBridge
 --- !u!1 &426433434
 GameObject:
   m_ObjectHideFlags: 0

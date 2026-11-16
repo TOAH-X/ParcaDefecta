@@ -4,12 +4,13 @@ namespace ParcaDefecta.System.Scene
 {
     /// <summary>
     /// UIのボタンからシーン遷移機能を呼び出すためのブリッジクラス。
-    /// 遷移先と演出の種類は Inspector で設定する。
+    /// 遷移先（シーンの種類）と演出の種類は Inspector で設定する。実際のシーンは SceneDatabase で決まる。
+    /// ゲームを始めるボタンは、シーンを移るだけではないので GameFlowUIBridge を使う。
     /// </summary>
     public class SceneLoadButton : MonoBehaviour
     {
-        [SerializeField, Tooltip("遷移先のシーン名")]
-        private string sceneName;
+        [SerializeField, Tooltip("遷移先のシーンの種類")]
+        private SceneType sceneType = SceneType.Title;
 
         [SerializeField, Tooltip("遷移時の演出の種類")]
         private TransitionManager.TransitionType transitionType = TransitionManager.TransitionType.Fade;
@@ -19,7 +20,7 @@ namespace ParcaDefecta.System.Scene
         /// </summary>
         public void LoadScene()
         {
-            SceneLoader.Instance.ChangeScene(sceneName, transitionType);
+            SceneLoader.Instance.ChangeScene(sceneType, transitionType);
         }
     }
 }

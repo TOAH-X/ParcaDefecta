@@ -260,7 +260,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 1151302601}
+  currentRadius: 0.5
 --- !u!1 &38950435
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,7 +403,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 1303645209}
+  currentRadius: 1
 --- !u!1 &57380583
 GameObject:
   m_ObjectHideFlags: 0
@@ -1111,7 +1115,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 243055942}
+  currentRadius: 1
 --- !u!1 &139994649
 GameObject:
   m_ObjectHideFlags: 0
@@ -3464,7 +3470,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 932935443}
+  currentRadius: 1
 --- !u!1 &517695066
 GameObject:
   m_ObjectHideFlags: 0
@@ -3602,6 +3610,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 517695066}
   m_CullTransparentMesh: 1
+--- !u!1 &536579482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 536579483}
+  - component: {fileID: 536579484}
+  m_Layer: 0
+  m_Name: GameFlowManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &536579483
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536579482}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1019406341}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &536579484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536579482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0769b66cc84f1a14592b0bc6b17a7816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameFlowManager
 --- !u!1 &582391304
 GameObject:
   m_ObjectHideFlags: 0
@@ -4363,7 +4415,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 1100997679}
+  currentRadius: 1
 --- !u!1 &679171579
 GameObject:
   m_ObjectHideFlags: 0
@@ -6406,7 +6460,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 1597333697}
+  currentRadius: 0.5
 --- !u!1 &845094771
 GameObject:
   m_ObjectHideFlags: 0
@@ -7178,7 +7234,9 @@ MonoBehaviour:
   weight: 3
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 1112558067}
+  currentRadius: 0.5
 --- !u!58 &928996532
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -7532,7 +7590,9 @@ MonoBehaviour:
   weight: 4
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 1827461835}
+  currentRadius: 0.5
 --- !u!1 &967682619
 GameObject:
   m_ObjectHideFlags: 0
@@ -7545,8 +7605,8 @@ GameObject:
   - component: {fileID: 967682623}
   - component: {fileID: 967682622}
   - component: {fileID: 967682621}
-  - component: {fileID: 967682624}
   - component: {fileID: 967682625}
+  - component: {fileID: 967682626}
   m_Layer: 5
   m_Name: RetryButton
   m_TagString: Untagged
@@ -7656,18 +7716,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 967682619}
   m_CullTransparentMesh: 1
---- !u!114 &967682624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 967682619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9571fb2774fb3f147b963816e28a9857, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StageResetUIBridge
 --- !u!114 &967682625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7685,9 +7733,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 967682624}
-          m_TargetAssemblyTypeName: StageResetUIBridge, Assembly-CSharp
-          m_MethodName: OnResetButtonClick
+        - m_Target: {fileID: 967682626}
+          m_TargetAssemblyTypeName: GameFlowUIBridge, Assembly-CSharp
+          m_MethodName: ReloadCurrentStage
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -7697,6 +7745,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &967682626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967682619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e33c70536c87f64a9d0e8a562defbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameFlowUIBridge
 --- !u!1 &979388904
 GameObject:
   m_ObjectHideFlags: 0
@@ -7924,7 +7984,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 536579483}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1044569457
@@ -8885,7 +8946,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 139994650}
+  currentRadius: 1
 --- !u!4 &1119728405
 Transform:
   m_ObjectHideFlags: 0
@@ -10363,7 +10426,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 1180244400}
+  currentRadius: 1
 --- !u!1 &1312613079
 GameObject:
   m_ObjectHideFlags: 0
@@ -10414,7 +10479,9 @@ MonoBehaviour:
   weight: 3
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 25907576}
+  currentRadius: 0.5
 --- !u!58 &1312613083
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -10897,7 +10964,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 2126870107}
+  currentRadius: 1
 --- !u!1 &1455482778
 GameObject:
   m_ObjectHideFlags: 0
@@ -11704,7 +11773,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 1889317957}
+  currentRadius: 0.5
 --- !u!1 &1597333696
 GameObject:
   m_ObjectHideFlags: 0
@@ -12031,7 +12102,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 0.5
+  ropeRadiusRate: 1
   visual: {fileID: 1075105756}
+  currentRadius: 0.5
 --- !u!4 &1644951796
 Transform:
   m_ObjectHideFlags: 0
@@ -14652,7 +14725,9 @@ MonoBehaviour:
   weight: 0
   moveAxis: 0
   radius: 1
+  ropeRadiusRate: 1
   visual: {fileID: 851111775}
+  currentRadius: 1
 --- !u!1 &1978876669
 GameObject:
   m_ObjectHideFlags: 0
@@ -15813,7 +15888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c89a5e9f89ddac24499579db0b6e1fc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParcaDefecta.System.Scene.SceneLoadButton
-  sceneName: StartScene
+  sceneType: 0
   transitionType: 1
 --- !u!114 &2095537620
 MonoBehaviour:

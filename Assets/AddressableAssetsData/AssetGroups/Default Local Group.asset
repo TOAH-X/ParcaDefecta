@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 965801b58ee59344bafbbe092efce922
+    m_Address: SceneDatabase
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8bf1c10424fd31439bd7b7ca98f6581
     m_Address: NotificationCanvas
     m_ReadOnly: 0
