@@ -24,6 +24,10 @@ public class StageManager : Singleton<StageManager>
     private bool _isLoading;
     private bool _isDatabaseLoading;
 
+    // ステージが生成されたことを通知するストリーム（Player の生成より先に流れる）
+    private readonly Subject<StageData> _onStageSpawned = new();
+    public Observable<StageData> OnStageSpawned => _onStageSpawned;
+
     // プレイヤーが生成されたことを通知するストリーム
     private readonly Subject<Transform> _onPlayerSpawned = new();
     public Observable<Transform> OnPlayerSpawned => _onPlayerSpawned;
@@ -207,6 +211,8 @@ public class StageManager : Singleton<StageManager>
         DestroyExistingPlayers();
 
         StageData stageInstance = SpawnStage(stagePrefab);
+        // カメラの範囲などを先に決めてから Player を置くため、Player の生成より前に通知する
+        _onStageSpawned.OnNext(stageInstance);
         SpawnPlayer(stageInstance);
     }
 
@@ -287,6 +293,8 @@ public class StageManager : Singleton<StageManager>
 
     private void OnDestroy()
     {
+        _onStageSpawned.OnCompleted();
+        _onStageSpawned.Dispose();
         _onPlayerSpawned.OnCompleted();
         _onPlayerSpawned.Dispose();
     }
