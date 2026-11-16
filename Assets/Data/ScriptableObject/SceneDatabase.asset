@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneDatabase
   scenes:
   - type: 0
-    sceneAsset: {fileID: 102900000, guid: c9bf9e088cab8e14d8b162d1ea748f4b, type: 3}
-    sceneName: StartScene
+    sceneAsset: {fileID: 102900000, guid: 5090009471331474e81c7ad81f0f620d, type: 3}
+    sceneName: StartScene_Test1
   - type: 1
+    sceneAsset: {fileID: 102900000, guid: 646e0f439434e164dacecb2a32322dcc, type: 3}
+    sceneName: GameScene_Test1
+  - type: 2
     sceneAsset: {fileID: 102900000, guid: 4981d24bccc568c48bd28a55215d15f5, type: 3}
     sceneName: DebugScene
