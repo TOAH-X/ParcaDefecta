@@ -41,6 +41,9 @@ public class CinemachineTargetUpdater : MonoBehaviour
             {
                 vcam.Follow = targetTransform;
                 vcam.LookAt = targetTransform;
+                // 前の位置を忘れさせ、次の更新で新しい Player の位置へ瞬時に移す。
+                // これが無いと Damping で前の場所からゆっくり動き、暗幕が開いたあとに移動が見えてしまう
+                vcam.PreviousStateIsValid = false;
                 Debug.Log($"CinemachineTargetUpdater: カメラの追従対象を {targetTransform.name} に更新しました。");
             })
             .AddTo(this); // このコンポーネントが破棄されたら自動で購読解除
