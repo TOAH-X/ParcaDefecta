@@ -168,7 +168,7 @@ Transform:
   m_GameObject: {fileID: 1346116025618133116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7, y: 0, z: 0}
+  m_LocalPosition: {x: -7, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -62481,7 +62481,7 @@ MonoBehaviour:
   featherWidth: 2
   featherSteps: 3
   activeMargin: 2
-  orderInLayer: 410
+  orderInLayer: 448
 --- !u!1 &8241713556276654862
 GameObject:
   m_ObjectHideFlags: 0
@@ -63533,10 +63533,6 @@ PrefabInstance:
     - target: {fileID: 2683064843188707192, guid: 0349e083600ca674f9325eb464c3b265, type: 3}
       propertyPath: m_Name
       value: LaunchBlock
-      objectReference: {fileID: 0}
-    - target: {fileID: 7737599327949277788, guid: 0349e083600ca674f9325eb464c3b265, type: 3}
-      propertyPath: m_SortingOrder
-      value: 360
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
