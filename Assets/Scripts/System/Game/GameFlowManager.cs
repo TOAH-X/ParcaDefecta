@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Scripting;
 using Cysharp.Threading.Tasks;
+using R3;
 
 /// <summary>
 /// ゲーム進行の手順を持つマネージャー。
@@ -14,8 +15,13 @@ using Cysharp.Threading.Tasks;
 ///   GameFlowManager.Instance.StartGame();          // 先頭ステージで開始（ゲームシーンにいなければ Game のシーンへ移る）
 ///   GameFlowManager.Instance.AdvanceToNextStage(); // 次のステージへ
 ///   GameFlowManager.Instance.ReloadCurrentStage(); // 現在のステージをやり直す
+///   GameFlowManager.Instance.ReturnToTitle();      // タイトルへ戻る
 ///   await GameFlowManager.Instance.StartGameAsync(); // 完了を待ちたい場合は Async 版
 /// ボタンから呼ぶときは GameFlowUIBridge を使う。
+///
+/// 次へ進もうとして次のステージが無かったときは、OnStagesEnded を流して「行き止まり」の状態になる
+/// （ステージの切り替え・やり直しを受け付けない。タイトルへ戻るか、開始し直すと解ける）。
+/// それをクリアとして扱うかはここでは決めない（試験版では TrialClearView が受け取ってクリア画面を出す）。
 /// </summary>
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class GameFlowManager : Singleton<GameFlowManager>
@@ -32,6 +38,16 @@ public class GameFlowManager : Singleton<GameFlowManager>
 
     /// <summary>開始処理中またはステージ切替中なら true。新しい要求はこの間無視される</summary>
     public bool IsBusy => IsStarting || IsChangingStage;
+
+    /// <summary>
+    /// 次のステージが無く、行き止まりになっていれば true。
+    /// この間はステージの切り替え・やり直しを受け付けない。タイトルへ戻るか、開始し直すと false に戻る。
+    /// </summary>
+    public bool HasStagesEnded { get; private set; }
+
+    // 次へ進もうとして、次のステージが無かったことを知らせる（クリアかどうかは受け取る側が決める）
+    private readonly Subject<Unit> _onStagesEnded = new();
+    public Observable<Unit> OnStagesEnded => _onStagesEnded;
 
     private async void Start()
     {
@@ -65,6 +81,7 @@ public class GameFlowManager : Singleton<GameFlowManager>
         }
 
         IsStarting = true;
+        HasStagesEnded = false;
         try
         {
             // 会話が出ていれば閉じる。ステージごと入れ替わるので、会話ウィンドウだけ残らないようにする
@@ -125,10 +142,53 @@ public class GameFlowManager : Singleton<GameFlowManager>
         AdvanceToNextStageAsync().Forget();
     }
 
-    /// <summary>次のステージへ進む。完了まで待てます</summary>
-    public UniTask AdvanceToNextStageAsync()
+    /// <summary>
+    /// 次のステージへ進む。完了まで待てます。
+    /// 次のステージが無ければ、暗幕は掛けずに OnStagesEnded を流して行き止まりの状態になる。
+    /// </summary>
+    public async UniTask AdvanceToNextStageAsync()
     {
-        return RunStageChangeAsync(() => StageManager.Instance.AdvanceToNextStageAsync());
+        if (IsBusy || HasStagesEnded)
+        {
+            Debug.LogWarning("[GameFlowManager] 処理中または行き止まりのため、次のステージへの要求を無視します");
+            return;
+        }
+
+        if (!await StageManager.Instance.HasNextStageAsync())
+        {
+            HasStagesEnded = true;
+            DialogueManager.Instance.Cancel();
+            _onStagesEnded.OnNext(Unit.Default);
+            return;
+        }
+
+        await RunStageChangeAsync(() => StageManager.Instance.AdvanceToNextStageAsync());
+    }
+
+    // ---- タイトルへ ----
+
+    /// <summary>タイトルへ戻る。完了を待たない版</summary>
+    public void ReturnToTitle()
+    {
+        ReturnToTitleAsync().Forget();
+    }
+
+    /// <summary>
+    /// タイトルへ戻り、行き止まりの状態を解く。完了まで待てます。
+    /// ポーズはここでは解かない（暗転中にゲームが動き出さないように）。シーンが変わったときに TimeManager が解く。
+    /// </summary>
+    public async UniTask ReturnToTitleAsync()
+    {
+        if (IsBusy)
+        {
+            Debug.LogWarning("[GameFlowManager] 処理中のためタイトルへの要求を無視します");
+            return;
+        }
+
+        DialogueManager.Instance.Cancel();
+        HasStagesEnded = false;
+
+        await SceneLoader.Instance.ChangeSceneAsync(SceneType.Title);
     }
 
     /// <summary>現在のステージをやり直す。完了を待たない版</summary>
@@ -149,9 +209,9 @@ public class GameFlowManager : Singleton<GameFlowManager>
     /// </summary>
     private async UniTask RunStageChangeAsync(Func<UniTask> changeAction)
     {
-        if (IsBusy)
+        if (IsBusy || HasStagesEnded)
         {
-            Debug.LogWarning("[GameFlowManager] 処理中のためステージ切替要求を無視します");
+            Debug.LogWarning("[GameFlowManager] 処理中または行き止まりのためステージ切替要求を無視します");
             return;
         }
 
@@ -177,5 +237,11 @@ public class GameFlowManager : Singleton<GameFlowManager>
     {
         SceneType? type = await SceneLoader.Instance.GetCurrentSceneTypeAsync();
         return type == SceneType.Game || type == SceneType.Debug;
+    }
+
+    private void OnDestroy()
+    {
+        _onStagesEnded.OnCompleted();
+        _onStagesEnded.Dispose();
     }
 }

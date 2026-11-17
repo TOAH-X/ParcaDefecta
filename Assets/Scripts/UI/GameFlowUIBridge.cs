@@ -20,6 +20,17 @@ public class GameFlowUIBridge : MonoBehaviour
     }
 
     /// <summary>
+    /// タイトルへ戻る（ポーズはシーンが変わったときに TimeManager が解く）。
+    /// </summary>
+    public void ReturnToTitle()
+    {
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.ReturnToTitle();
+        }
+    }
+
+    /// <summary>
     /// 現在のステージを最初からやり直す。
     /// </summary>
     public void ReloadCurrentStage()

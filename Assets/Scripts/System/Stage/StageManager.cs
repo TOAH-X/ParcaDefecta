@@ -79,6 +79,17 @@ public class StageManager : Singleton<StageManager>
     }
 
     /// <summary>
+    /// 今のステージの次があるかを返します（今のシーンのステージ一覧で判断）。
+    /// 一覧が引けないときは true を返し、判断を進める側（読み込み）でエラーを出させる。
+    /// </summary>
+    public async UniTask<bool> HasNextStageAsync()
+    {
+        var database = await GetCurrentDatabaseAsync();
+        if (database == null) return true;
+        return !string.IsNullOrEmpty(database.GetNextStageId(currentStageId));
+    }
+
+    /// <summary>
     /// 次のステージへ進みます。完了を待たない版。
     /// </summary>
     public void AdvanceToNextStage()
