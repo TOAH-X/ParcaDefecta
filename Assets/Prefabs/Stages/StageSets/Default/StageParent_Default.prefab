@@ -191,7 +191,7 @@ Transform:
   m_GameObject: {fileID: 1346116025618133116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15, y: -2, z: 0}
+  m_LocalPosition: {x: -15, y: -1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31194,14 +31194,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.19607843, g: 0.49019608, b: 0.6862745, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5fc34b81d7c2e4843b9a89b170a16117, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 21c67024d5b549aaad053906e572670b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
