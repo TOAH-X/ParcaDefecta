@@ -16,6 +16,11 @@ namespace ParcaDefecta.System
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
+            // プロジェクト全体の入力（InputSystem.actions）を有効にする。
+            // 再生時にスクリプトを読み込み直さない設定では、Input System が再生開始時に有効にし直さず、
+            // 前の再生の終わりに無効になったままキー操作が効かなくなるため、ここで毎回有効にする
+            UnityEngine.InputSystem.InputSystem.actions?.Enable();
+
             var singletonTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(GetTypesSafe)
                 .Where(t => t.IsClass && !t.IsAbstract)
@@ -26,6 +31,10 @@ namespace ParcaDefecta.System
             int count = 0;
             foreach (var (type, singletonBase) in singletonTypes)
             {
+                // 再生時にスクリプトを読み込み直さない設定のため、前の再生で消えた instance を先に忘れさせる
+                singletonBase.GetMethod("ResetStatic", BindingFlags.NonPublic | BindingFlags.Static)?.Invoke(null, null);
+
+
                 // Singleton<具象型>.Instance を参照することで、Singleton.cs 側のロジックで
                 // 「個別のGameObject作成」と「共通の親への紐付け」を自動実行させます。
                 singletonBase.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null);

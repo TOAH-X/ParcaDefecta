@@ -34,6 +34,14 @@ public class PulleyStopper : MonoBehaviour
         activeStoppers.Remove(this);
     }
 
+    // 再生時にスクリプトを読み込み直さない設定のため、起動時に前の再生の消えた物を一覧から外す。
+    // 編集中にも働く部品（ExecuteAlways）なので、全部は消さず、消えた物だけを外す
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatic()
+    {
+        activeStoppers.RemoveAll(stopper => stopper == null);
+    }
+
     private void OnDrawGizmos()
     {
         if (stopperCollider == null) return;

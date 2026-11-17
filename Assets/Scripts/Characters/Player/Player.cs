@@ -49,6 +49,13 @@ public class Player : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
+    // 再生時にスクリプトを読み込み直さない設定のため、前の再生の値を起動時に戻す
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatic()
+    {
+        Instance = null;
+    }
+
     // Update is called once per frame
     void Update()
     {
