@@ -17,6 +17,9 @@ public class AlterPlayer : MonoBehaviour
 
     // 何秒遅れて追従するか
     [SerializeField] float syncDelaySeconds = 1.0f;             // Player側を参照すること
+
+    /// <summary>何秒遅れて追従するか。紐（PlayerTrailRenderer）の長さもこの値で決まる</summary>
+    public float SyncDelaySeconds => syncDelaySeconds;
     // 分離の持続秒数と慣性速度は PlayerSeparation 側で一元管理し、Separation の引数で受け取る
 
     // Start is called before the first frame update
@@ -46,8 +49,8 @@ public class AlterPlayer : MonoBehaviour
     // 追従※AlterPlayerMoveに移動すること
     public void SynchronizePlayer()
     {
-        // nフレーム前のデータを取得し状態を適用
-        if (playerMoverHistory.TryGetPastFrameData((int)(60 * syncDelaySeconds), out var pastData))
+        // syncDelaySeconds 秒前のデータを取得し状態を適用
+        if (playerMoverHistory.TryGetPastData(syncDelaySeconds, out var pastData))
         {
             transform.position = pastData.position;
             transform.rotation = pastData.rotation;

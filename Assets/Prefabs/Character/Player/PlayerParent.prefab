@@ -361,6 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerTrailRenderer
   history: {fileID: 2856170947875069508}
+  alterPlayer: {fileID: 613552283749301821}
   edgeRadius: 0.1
   trailSegmentPrefab: {fileID: 8874261666626836036, guid: 4ab8e22ecf23a1c4d8509a1c12d8b2a4, type: 3}
 --- !u!1 &7745288673444044554
@@ -654,7 +655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7fec46c5b8ea35429e0679f5be2b871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoverHistory
-  frameDelay: 60
+  keepSeconds: 1.5
   spriteRenderer: {fileID: 1190898846280197221}
 --- !u!114 &8889705233417701685
 MonoBehaviour:

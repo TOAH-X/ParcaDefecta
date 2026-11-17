@@ -30,17 +30,16 @@ public class AfterImage : MonoBehaviour
         if (playerMoverHistory == null) return;
 
         // プレイヤー(現在)から分身(syncDelaySeconds前)までの間を等間隔で埋める
-        float totalFrames = 60f * syncDelaySeconds;
-        float step = totalFrames / (imageCount + 1);
+        float step = syncDelaySeconds / (imageCount + 1);
 
         // 1つ前の描画位置（最初はプレイヤー自身の現在地）
         Vector3 lastPosition = transform.position;
 
         for (int i = 0; i < renderers.Count; i++)
         {
-            int framesAgo = (int)(step * (i + 1));
+            float secondsAgo = step * (i + 1);
 
-            if (playerMoverHistory.TryGetPastFrameData(framesAgo, out var data))
+            if (playerMoverHistory.TryGetPastData(secondsAgo, out var data))
             {
                 // 前の描画位置（プレイヤー本体または1つ前の残像）との距離が近い場合は非表示
                 if (Vector3.Distance(data.position, lastPosition) < 0.1f)

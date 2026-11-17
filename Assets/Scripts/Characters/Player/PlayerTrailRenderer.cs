@@ -1,15 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 本体から分身までをつなぐ紐（見た目の線と当たり判定）を描く部品。
+/// 長さは分身の遅れ（AlterPlayer.SyncDelaySeconds）で決まり、紐の端は分身の位置と一致する。
+/// </summary>
 public class PlayerTrailRenderer : MonoBehaviour
 {
     [SerializeField] private PlayerMoverHistory history;
+    [SerializeField, Tooltip("紐の長さ（遅れの秒数）を決める分身")] private AlterPlayer alterPlayer;
     [SerializeField] private float edgeRadius = 0.1f;
     [SerializeField] private GameObject trailSegmentPrefab; // インスペクタからスクリプト付きのプレハブをアタッチ可能にする
 
     // セグメント表示用のオブジェクトプール
     private List<GameObject> segmentPool = new List<GameObject>();
     private List<TrailSegmentHandler> activeSegments = new List<TrailSegmentHandler>();
+
+    // 区切りごとの紐の点（PlayerMoverHistory.CollectTrail が入れる。使い回して毎フレームの確保を避ける）
+    private readonly List<List<Vector3>> pointBuffers = new List<List<Vector3>>();
 
     private class TrailSegmentHandler
     {
@@ -22,24 +30,24 @@ public class PlayerTrailRenderer : MonoBehaviour
 
     void LateUpdate()
     {
-        if (history == null) return;
+        if (history == null || alterPlayer == null) return;
 
-        var historySegments = history.Segments;
+        int segmentCount = history.CollectTrail(alterPlayer.SyncDelaySeconds, pointBuffers);
 
         // アクティブなセグメントの数を調整
-        while (activeSegments.Count < historySegments.Count)
+        while (activeSegments.Count < segmentCount)
         {
             activeSegments.Add(CreateSegment());
         }
-        while (activeSegments.Count > historySegments.Count)
+        while (activeSegments.Count > segmentCount)
         {
             ReleaseSegment(activeSegments.Count - 1);
         }
 
         // 各セグメントを更新
-        for (int i = 0; i < historySegments.Count; i++)
+        for (int i = 0; i < segmentCount; i++)
         {
-            UpdateSegment(activeSegments[i], historySegments[i]);
+            UpdateSegment(activeSegments[i], pointBuffers[i]);
         }
     }
 
@@ -98,9 +106,9 @@ public class PlayerTrailRenderer : MonoBehaviour
         activeSegments.RemoveAt(index);
     }
 
-    private void UpdateSegment(TrailSegmentHandler handler, IReadOnlyList<PlayerMoverHistory.PlayerFrameData> data)
+    private void UpdateSegment(TrailSegmentHandler handler, List<Vector3> points)
     {
-        int count = data.Count;
+        int count = points.Count;
         if (count < 2)
         {
             handler.Line.positionCount = 0;
@@ -117,7 +125,7 @@ public class PlayerTrailRenderer : MonoBehaviour
         handler.ColliderPoints.Clear();
         for (int i = 0; i < count; i++)
         {
-            Vector3 pos = data[i].position;
+            Vector3 pos = points[i];
             handler.LinePositions[i] = pos;
             handler.ColliderPoints.Add(new Vector2(pos.x, pos.y));
         }
