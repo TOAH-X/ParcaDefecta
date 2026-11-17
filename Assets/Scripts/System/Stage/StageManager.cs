@@ -238,11 +238,14 @@ public class StageManager : Singleton<StageManager>
 
     /// <summary>
     /// シーン内の StageData を持つオブジェクトをすべて破棄します。
+    /// Destroy はフレームの終わりまで実際には消えないため、先に非表示にして、
+    /// 同じフレームに作る新しいステージと重ならないようにする（例: ステージが持つ Global Light 2D が 2 つになるとエラーになる）。
     /// </summary>
     private void DestroyExistingStages()
     {
         foreach (var stage in FindObjectsByType<StageData>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
+            stage.gameObject.SetActive(false);
             Destroy(stage.gameObject);
         }
         _currentStageInstance = null;
