@@ -10,9 +10,11 @@ public class FPSManager : Singleton<FPSManager>
     {
         base.Awake();
 
-        // VSync（垂直同期）をオフにしないとtargetFrameRateが適用されない場合があるため設定
-        QualitySettings.vSyncCount = 0;
-        // FPSを固定
+        // VSync（垂直同期）をオンにする。オフだとビルドで画面の描き替えの途中に次の絵が届き、
+        // カメラが動くと横線を境に絵がずれて歪んで見える（ティアリング）。
+        // PC ではモニターのリフレッシュレートに合わせて描き、下の targetFrameRate は無視される
+        QualitySettings.vSyncCount = 1;
+        // VSync が効かない環境（スマホなど）では、この値でFPSを固定する
         Application.targetFrameRate = targetFrameRate;
     }
 }
