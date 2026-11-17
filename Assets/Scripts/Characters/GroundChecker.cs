@@ -14,8 +14,9 @@ public class GroundChecker : MonoBehaviour
     {
         Vector2 thisSize = new Vector2(Mathf.Abs(this.transform.localScale.x), Mathf.Abs(this.transform.localScale.y));
 
-        // レイの幅は当たり判定の幅の 90%。左右均等に内側へ詰め、横の壁に届かないようにする
-        float sizeRate = 0.9f;
+        // レイの幅は当たり判定の幅の 98%。左右均等に内側へ詰め、横の壁に届かないようにする
+        // （90% だと、幅 1 マスの穴の縁に体が乗って止まったときにレイが穴の中を通り、滞空扱いになっていた）
+        float sizeRate = 0.98f;
         float colliderWidth = boxCollider.size.x * thisSize.x;
         float rayLength = colliderWidth * sizeRate;
 
