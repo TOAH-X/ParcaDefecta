@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageDatabase
   playerParentPrefab: {fileID: 8806386904738557018, guid: 1054d0b3b6af99b46834bff36d608d5a, type: 3}
   stageDefinitions:
+  - id: tutorial
+    prefab: {fileID: 8559921169851362650, guid: 9cb976dd18216bc4e9c3b8e7ba133085, type: 3}
   - id: 1
-    prefab: {fileID: 8559921169851362650, guid: 928b98d663c143246abc8144d8d95b18, type: 3}
+    prefab: {fileID: 8559921169851362650, guid: 92fbfb6e0db336f4084c87ee20b9ef9b, type: 3}
   - id: 2
-    prefab: {fileID: 8559921169851362650, guid: 0332c39703d4e3d4fb15c9a402b4ab0a, type: 3}
+    prefab: {fileID: 8559921169851362650, guid: 629f8d376fc5e734c929c668436e4260, type: 3}
