@@ -15,6 +15,10 @@ public class Player : MonoBehaviour
     [SerializeField] PlayerSeparation separation;
     [SerializeField] PlayerDeath death;
 
+    [Header("Alter")]
+    [SerializeField, Tooltip("分身。出てくるまでの進み具合をスキルのクールタイム表示に使う")]
+    AlterPlayer alterPlayer;
+
     [Header("Camera")]
     [SerializeField, Tooltip("カメラに見てほしい点。本体と分身をまとめた注目点(PlayerFocusPoint)を設定する。未設定なら Player 自身")]
     Transform cameraFocus;
@@ -27,6 +31,9 @@ public class Player : MonoBehaviour
     public float UseTeleportationTimer => teleportation.CurrentTimer;
     public float SeparationCoolTime => separation.CoolTime;
     public float UseSeparationTimer => separation.CurrentTimer;
+
+    /// <summary>分身が出てくるまでの進み具合（0〜1）。出てくるまでは分離・瞬間移動が使えない</summary>
+    public float AlterAppearProgress => alterPlayer != null ? alterPlayer.AppearProgress : 1f;
 
     // 操作可能か
     private bool isOperable = true;

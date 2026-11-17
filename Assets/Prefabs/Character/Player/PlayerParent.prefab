@@ -584,6 +584,7 @@ MonoBehaviour:
   teleportation: {fileID: 8889705233417701685}
   separation: {fileID: 6743028822355704180}
   death: {fileID: 2416349657376112942}
+  alterPlayer: {fileID: 613552283749301821}
   cameraFocus: {fileID: 2464896282543013331}
 --- !u!114 &9065968701428105908
 MonoBehaviour:

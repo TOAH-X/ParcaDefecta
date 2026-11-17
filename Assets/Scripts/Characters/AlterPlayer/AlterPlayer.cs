@@ -17,6 +17,16 @@ public class AlterPlayer : MonoBehaviour
     bool isAvailable = false;
     public bool IsAvailable => isAvailable;
 
+    /// <summary>分身が出てくるまでの進み具合（0〜1）。出てからは 1。スキルのクールタイム表示に使う</summary>
+    public float AppearProgress
+    {
+        get
+        {
+            if (isAvailable || syncDelaySeconds <= 0f) return 1f;
+            return Mathf.Clamp01(playerMoverHistory.RecordedSeconds / syncDelaySeconds);
+        }
+    }
+
     // 通常状態のカラーを保持
     private Color normalColor;
 

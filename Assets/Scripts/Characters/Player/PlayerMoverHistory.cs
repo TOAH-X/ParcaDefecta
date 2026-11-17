@@ -41,6 +41,20 @@ public class PlayerMoverHistory : MonoBehaviour
     /// <summary>残す秒数（警告用に分身などが読む）</summary>
     public float KeepSeconds => keepSeconds;
 
+    /// <summary>
+    /// 今ある記録が何秒前までさかのぼれるか。開始直後に、分身が出てくるまでの進み具合を出すのに使う。
+    /// 古い記録は keepSeconds を超えると消えるので、それ以上にはならない。
+    /// </summary>
+    public float RecordedSeconds
+    {
+        get
+        {
+            int totalCount = GetTotalCount();
+            if (totalCount == 0) return 0f;
+            return (totalCount - 1) * SampleInterval + sinceLastSample;
+        }
+    }
+
     void LateUpdate()
     {
         ProcessFrame();

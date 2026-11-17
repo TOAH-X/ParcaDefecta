@@ -38,13 +38,9 @@ public class SkillCooldownDisplay : MonoBehaviour
 
         // クールタイムの進捗を計算 (残り時間 / 最大時間)
         // Timerが0に向かって減るため、fillAmountも1から0へ減少します
-        if (coolTime > 0)
-        {
-            cooldownImage.fillAmount = 1 - currentTimer / coolTime;
-        }
-        else
-        {
-            cooldownImage.fillAmount = 1f;
-        }
+        float fill = coolTime > 0 ? 1 - currentTimer / coolTime : 1f;
+
+        // 開始直後は分身が出てくるまで（約 1 秒）どちらのスキルも使えないので、その進み具合も表示する
+        cooldownImage.fillAmount = Mathf.Min(fill, Player.Instance.AlterAppearProgress);
     }
 }
