@@ -12,6 +12,11 @@ public class AlterPlayer : MonoBehaviour
     bool isSeparated = false;
     public bool IsSeparated => isSeparated;
 
+    // 本体の記録が遅れの秒数ぶんたまり、分身が本体の通った位置にいるか。
+    // たまるまで（ゲーム開始から最初の syncDelaySeconds 秒）は分身を隠し、分離・瞬間移動も使わせない
+    bool isAvailable = false;
+    public bool IsAvailable => isAvailable;
+
     // 通常状態のカラーを保持
     private Color normalColor;
 
@@ -50,7 +55,8 @@ public class AlterPlayer : MonoBehaviour
     public void SynchronizePlayer()
     {
         // syncDelaySeconds 秒前のデータを取得し状態を適用
-        if (playerMoverHistory.TryGetPastData(syncDelaySeconds, out var pastData))
+        isAvailable = playerMoverHistory.TryGetPastData(syncDelaySeconds, out var pastData);
+        if (isAvailable)
         {
             transform.position = pastData.position;
             transform.rotation = pastData.rotation;
@@ -65,6 +71,13 @@ public class AlterPlayer : MonoBehaviour
     private void UpdateVisibility()
     {
         if (Player.Instance == null) return;
+
+        // 記録がたまるまでは、分身はまだ本体の通った位置にいないので隠す
+        if (!isAvailable)
+        {
+            spriteRenderer.enabled = false;
+            return;
+        }
 
         // プレイヤーとの距離を計算
         float distance = Vector3.Distance(transform.position, Player.Instance.transform.position);

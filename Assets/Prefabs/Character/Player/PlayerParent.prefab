@@ -672,7 +672,7 @@ MonoBehaviour:
   coolTime: 1
   playerMover: {fileID: 2607775265482914274}
   playerMoverHistory: {fileID: 2856170947875069508}
-  alterPlayerTransform: {fileID: 6719837942395725324}
+  alterPlayer: {fileID: 613552283749301821}
 --- !u!114 &6743028822355704180
 MonoBehaviour:
   m_ObjectHideFlags: 0

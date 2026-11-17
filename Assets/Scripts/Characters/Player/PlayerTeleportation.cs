@@ -8,7 +8,7 @@ public class PlayerTeleportation : MonoBehaviour
     [SerializeField] float coolTime = 1.0f;
     [SerializeField] PlayerMover playerMover;
     [SerializeField] PlayerMoverHistory playerMoverHistory;
-    [SerializeField] Transform alterPlayerTransform;
+    [SerializeField] AlterPlayer alterPlayer;
 
     public float CoolTime => coolTime;
     public float CurrentTimer { get; private set; }
@@ -17,6 +17,8 @@ public class PlayerTeleportation : MonoBehaviour
     public void Execute()
     {
         if (!IsReady) return;
+        // 分身がまだ出ていない（本体の記録がたまっていない）間は、移る先が無いので移動しない
+        if (!alterPlayer.IsAvailable) return;
         TeleportationAsync(this.GetCancellationTokenOnDestroy()).Forget();
     }
 
@@ -26,6 +28,7 @@ public class PlayerTeleportation : MonoBehaviour
         CurrentTimer = coolTime;
 
         // 移動と履歴リセット
+        Transform alterPlayerTransform = alterPlayer.transform;
         playerMover.SetPositionAndRotation(alterPlayerTransform.position, alterPlayerTransform.rotation);
         playerMoverHistory.StartNewSegment();
 

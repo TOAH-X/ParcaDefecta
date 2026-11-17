@@ -21,6 +21,8 @@ public class PlayerSeparation : MonoBehaviour
     public void Execute(Vector2 moveInput)
     {
         if (!IsReady) return;
+        // 分身がまだ出ていない（本体の記録がたまっていない）間は分離しない
+        if (!alterPlayer.IsAvailable) return;
         // クールタイムが持続時間より短く設定されていても、分離中の二重実行はさせない
         if (alterPlayer.IsSeparated) return;
         SeparationAsync(moveInput, this.GetCancellationTokenOnDestroy()).Forget();
