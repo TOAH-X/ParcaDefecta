@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 8303976632377432005}
   - component: {fileID: 7455178766117454988}
   - component: {fileID: 3846914677806869394}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Front_Atmosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 8184867546417366063}
   - component: {fileID: 3055970601230819914}
   - component: {fileID: 6361381613057614971}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mid_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -444,7 +444,7 @@ GameObject:
   - component: {fileID: 6638306572127375363}
   - component: {fileID: 3327257422536486263}
   - component: {fileID: 2430226246750275455}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Front_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -670,7 +670,7 @@ GameObject:
   - component: {fileID: 8585049111619146346}
   - component: {fileID: 4509593511956209390}
   - component: {fileID: 283576473007240771}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Main_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28814,7 +28814,7 @@ GameObject:
   - component: {fileID: 6663959900168491236}
   - component: {fileID: 4027116796276882966}
   - component: {fileID: 4235660910117050917}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sky_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32944,7 +32944,7 @@ GameObject:
   - component: {fileID: 6206052942118647126}
   - component: {fileID: 5363938082381994298}
   - component: {fileID: 7586138412906560906}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sky_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33019,7 +33019,7 @@ GameObject:
   - component: {fileID: 4383442472117384641}
   - component: {fileID: 2984802543288228471}
   - component: {fileID: 4741188502219060375}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Far_Atmosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33304,7 +33304,7 @@ GameObject:
   - component: {fileID: 6954483191543661341}
   - component: {fileID: 3077373053030768198}
   - component: {fileID: 3319862899247228010}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Far_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33685,7 +33685,7 @@ GameObject:
   - component: {fileID: 1472341792421284858}
   - component: {fileID: 2033894937777413953}
   - component: {fileID: 2217092011021405462}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mid_Atmosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33793,7 +33793,7 @@ GameObject:
   - component: {fileID: 751588574115429214}
   - component: {fileID: 7024572484006081510}
   - component: {fileID: 2545058831930883130}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Main_Atmosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3310534656164244727}
   - component: {fileID: 3290658696293204526}
   - component: {fileID: -477281808047245682}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: ClearCanvas_Test1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 4260034735538164672}
   - component: {fileID: 3912851005614451428}
   - component: {fileID: 7351297854085844128}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: ReturnToTitleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 6349406077373697344}
   - component: {fileID: 4837755085915414633}
   - component: {fileID: 5369395125534315190}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -424,7 +424,7 @@ GameObject:
   - component: {fileID: 6923439880892049087}
   - component: {fileID: 3474681346256333433}
   - component: {fileID: 1181329126628098617}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -561,7 +561,7 @@ GameObject:
   - component: {fileID: 1485295290545172157}
   - component: {fileID: 6960099838495131576}
   - component: {fileID: 4039438140227883692}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
