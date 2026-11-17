@@ -80,6 +80,19 @@ public class SceneLoader : Singleton<SceneLoader>
     }
 
     /// <summary>
+    /// 今いるシーンで遊ぶステージ一覧を返す（SceneDatabase の、そのシーンの行に指定したもの）。無ければ null。
+    /// 前もって覚えておかず、使うその時に呼ぶ（シーンの切り替えと順番がずれないようにするため）。
+    /// </summary>
+    public async UniTask<StageDatabase> GetCurrentStageDatabaseAsync()
+    {
+        await EnsureDatabaseLoadedAsync();
+        if (database == null) return null;
+
+        string current = SceneManager.GetActiveScene().name;
+        return database.TryGetStageDatabase(current, out var stageDatabase) ? stageDatabase : null;
+    }
+
+    /// <summary>
     /// 指定した種類のシーンへ、演出で画面を隠してから移り、完了後に画面を開けます。完了まで待てます。
     /// </summary>
     public async UniTask ChangeSceneAsync(SceneType type, TransitionManager.TransitionType transitionType = TransitionManager.TransitionType.Fade)

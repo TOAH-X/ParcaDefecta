@@ -2,20 +2,17 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using R3;
-using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Scripting;
 
 /// <summary>
 /// ステージ管理を行うマネージャー。
-/// どのシーンから開始しても自動的に初期化され、StageDatabaseを解決します。
+/// ステージ一覧（StageDatabase）は覚えておかず、処理を始めるその時に「今いるシーンの一覧」を SceneLoader に聞く。
+/// 一覧はシーンごとに SceneDatabase で指定する（試験版・本番・デバッグで別の一覧を使うため）。
 /// </summary>
 [Preserve] // リフレクション経由で生成されるためストリッピング対象から除外
 public class StageManager : Singleton<StageManager>
 {
-    [Header("Data Source")]
-    [SerializeField] private StageDatabase database;
-
     [Header("Runtime State")]
     [SerializeField] private string currentStageId;
     private GameObject _currentStageInstance;
@@ -42,7 +39,6 @@ public class StageManager : Singleton<StageManager>
     }
 
     private bool _isLoading;
-    private bool _isDatabaseLoading;
 
     // ステージが生成されたことを通知するストリーム（Player の生成より先に流れる）
     private readonly Subject<StageData> _onStageSpawned = new();
@@ -58,75 +54,27 @@ public class StageManager : Singleton<StageManager>
         base.Awake();
     }
 
-    private async void Start()
+    /// <summary>
+    /// 今いるシーンのステージ一覧を引く。無ければエラーを出して null。
+    /// 覚えておかず、処理を始めるたびに呼ぶ（シーンの切り替えと順番がずれないようにするため）。
+    /// </summary>
+    private async UniTask<StageDatabase> GetCurrentDatabaseAsync()
     {
-        // データベースを先読みしておく。
-        // ステージを置くタイミングは GameFlowManager が決めるため、ここでは読み込みだけ行う
-        await EnsureDatabaseLoadedAsync();
-    }
-
-    private async UniTask EnsureDatabaseLoadedAsync()
-    {
-        if (database != null) return;
-
-        // 重複ロードを防止
-        if (_isDatabaseLoading)
+        var database = await SceneLoader.Instance.GetCurrentStageDatabaseAsync();
+        if (database == null)
         {
-            await UniTask.WaitUntil(() => database != null || !_isDatabaseLoading, PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
-            return;
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            Debug.LogError($"StageManager: 今のシーン '{sceneName}' にステージ一覧が指定されていません。SceneDatabase を確認してください。");
         }
-
-        _isDatabaseLoading = true;
-
-        // システムの初期化。既に終わっていればすぐ返ります。
-        var initHandle = Addressables.InitializeAsync();
-        await initHandle.ToUniTask();
-
-        try
-        {
-            Debug.Log($"StageManager: Addressable Key '{AddressableKeys.StageDatabase}' を使用して StageDatabase のロードを開始します。");
-
-            var handle = Addressables.LoadAssetAsync<StageDatabase>(AddressableKeys.StageDatabase);
-            await handle.ToUniTask();
-
-            if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
-            {
-                database = handle.Result;
-                if (database != null)
-                {
-                    Debug.Log($"StageManager: '{AddressableKeys.StageDatabase}' のロードに成功しました。アセット名: {database.name}");
-                }
-                else
-                {
-                    Debug.LogError($"StageManager: '{AddressableKeys.StageDatabase}' のロードは成功しましたが、結果のデータベースが null です。Addressables グループの設定を確認してください。");
-                }
-            }
-            else
-            {
-                // 詳細なエラー理由を出力
-                Debug.LogError($"StageManager: '{AddressableKeys.StageDatabase}' のロードに失敗しました。Status: {handle.Status}");
-                if (handle.OperationException != null)
-                {
-                    Debug.LogException(handle.OperationException);
-                }
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"StageManager: Addressablesでの '{AddressableKeys.StageDatabase}' ロード中に例外が発生しました。Keyが正しいか、Addressable Groupsでアドレスが設定されているか確認してください。\nError: {e.Message}");
-        }
-        finally
-        {
-            _isDatabaseLoading = false;
-        }
+        return database;
     }
 
     /// <summary>
-    /// 先頭ステージの ID を返します。データベース未読込なら読み込みを待ちます。見つからなければ null。
+    /// 今いるシーンのステージ一覧の、先頭ステージの ID を返します。見つからなければ null。
     /// </summary>
     public async UniTask<string> GetFirstStageIdAsync()
     {
-        await EnsureDatabaseLoadedAsync();
+        var database = await GetCurrentDatabaseAsync();
         return database?.GetFirstStageId();
     }
 
@@ -143,7 +91,7 @@ public class StageManager : Singleton<StageManager>
     /// </summary>
     public async UniTask AdvanceToNextStageAsync()
     {
-        await EnsureDatabaseLoadedAsync();
+        var database = await GetCurrentDatabaseAsync();
         if (database == null) return;
 
         string nextId = database.GetNextStageId(currentStageId);
@@ -188,7 +136,7 @@ public class StageManager : Singleton<StageManager>
 
     /// <summary>
     /// 指定されたIDのステージを読み込み、プレイヤーを配置します。完了まで待てます。
-    /// 読み込み中に来た要求は無視します（データベースの読み込み待ちも含む）。
+    /// 読み込み中に来た要求は無視します（ステージ一覧を引いている間も含む）。
     /// </summary>
     public async UniTask LoadStageAsync(string stageId)
     {
@@ -201,7 +149,7 @@ public class StageManager : Singleton<StageManager>
         _isLoading = true;
         try
         {
-            await EnsureDatabaseLoadedAsync();
+            var database = await GetCurrentDatabaseAsync();
             if (database == null) return;
 
             var info = database.GetStageInfo(stageId);
@@ -213,7 +161,7 @@ public class StageManager : Singleton<StageManager>
             }
 
             currentStageId = stageId;
-            ProcessStageLoading(info.Prefab);
+            ProcessStageLoading(info.Prefab, database.PlayerParentPrefab);
         }
         finally
         {
@@ -225,7 +173,7 @@ public class StageManager : Singleton<StageManager>
     /// ステージ生成の統合処理。既存のステージと Player をすべて破棄してから、新しいステージと Player を生成します。
     /// 手置きのオブジェクトも自分が生成したものも区別せず破棄するため、生成後は常にステージ 1 つ・Player 1 体になります。
     /// </summary>
-    private void ProcessStageLoading(StageData stagePrefab)
+    private void ProcessStageLoading(StageData stagePrefab, GameObject playerParentPrefab)
     {
         DestroyExistingStages();
         DestroyExistingPlayers();
@@ -233,7 +181,7 @@ public class StageManager : Singleton<StageManager>
         StageData stageInstance = SpawnStage(stagePrefab);
         // カメラの範囲などを先に決めてから Player を置くため、Player の生成より前に通知する
         _onStageSpawned.OnNext(stageInstance);
-        SpawnPlayer(stageInstance);
+        SpawnPlayer(stageInstance, playerParentPrefab);
     }
 
     /// <summary>
@@ -281,9 +229,9 @@ public class StageManager : Singleton<StageManager>
     /// <summary>
     /// ステージの SpawnPoint に Player を生成して保持し、生成を通知します。
     /// </summary>
-    private void SpawnPlayer(StageData stageInstance)
+    private void SpawnPlayer(StageData stageInstance, GameObject playerParentPrefab)
     {
-        if (database.PlayerParentPrefab == null)
+        if (playerParentPrefab == null)
         {
             Debug.LogError("StageManager: StageDatabase に PlayerParentPrefab が設定されていません。これが原因でプレイヤーが生成されません。");
             return;
@@ -303,7 +251,7 @@ public class StageManager : Singleton<StageManager>
             Debug.LogWarning($"StageManager: ステージ '{stageInstance.name}' に SpawnPoint が設定されていません。");
         }
 
-        _currentPlayerInstance = Instantiate(database.PlayerParentPrefab, spawnPos, spawnRot);
+        _currentPlayerInstance = Instantiate(playerParentPrefab, spawnPos, spawnRot);
         Debug.Log($"StageManager: プレイヤーを生成しました。位置: {spawnPos}");
 
         // 生成されたPlayerコンポーネントを起点に通知を発行

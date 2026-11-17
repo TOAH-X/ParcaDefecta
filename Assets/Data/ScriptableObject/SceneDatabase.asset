@@ -16,9 +16,12 @@ MonoBehaviour:
   - type: 0
     sceneAsset: {fileID: 102900000, guid: 5090009471331474e81c7ad81f0f620d, type: 3}
     sceneName: StartScene_Test1
+    stageDatabase: {fileID: 0}
   - type: 1
     sceneAsset: {fileID: 102900000, guid: 646e0f439434e164dacecb2a32322dcc, type: 3}
     sceneName: GameScene_Test1
+    stageDatabase: {fileID: 11400000, guid: c0370d2474ba3d3418f6f1b28ef77985, type: 2}
   - type: 2
     sceneAsset: {fileID: 102900000, guid: 4981d24bccc568c48bd28a55215d15f5, type: 3}
     sceneName: DebugScene
+    stageDatabase: {fileID: 11400000, guid: 8991988a52ba5da4caa0a4a5c96f22f4, type: 2}

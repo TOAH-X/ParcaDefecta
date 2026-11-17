@@ -24,8 +24,12 @@ public class SceneDatabase : ScriptableObject
         [SerializeField, Tooltip("自動で写されるシーン名。手で書き換えない")]
         private string sceneName;
 
+        [SerializeField, Tooltip("このシーンで遊ぶステージ一覧。ステージを置くシーン（Game・Debug）だけ指定する")]
+        private StageDatabase stageDatabase;
+
         public SceneType Type => type;
         public string SceneName => sceneName;
+        public StageDatabase StageDatabase => stageDatabase;
 
 #if UNITY_EDITOR
         public Object SceneAsset => sceneAsset;
@@ -63,6 +67,16 @@ public class SceneDatabase : ScriptableObject
         return entry != null;
     }
 
+    /// <summary>
+    /// シーン名に対応するステージ一覧を取得する。登録が無いか、一覧が未指定なら false。
+    /// </summary>
+    public bool TryGetStageDatabase(string sceneName, out StageDatabase stageDatabase)
+    {
+        var entry = scenes.FirstOrDefault(s => !string.IsNullOrEmpty(s.SceneName) && s.SceneName == sceneName);
+        stageDatabase = entry?.StageDatabase;
+        return stageDatabase != null;
+    }
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -81,6 +95,17 @@ public class SceneDatabase : ScriptableObject
         var buildScenes = UnityEditor.EditorBuildSettings.scenes;
         foreach (var entry in scenes)
         {
+            // ステージ一覧の指定（ステージを置くシーンだけに必要）
+            bool isStageScene = entry.Type == SceneType.Game || entry.Type == SceneType.Debug;
+            if (isStageScene && entry.StageDatabase == null)
+            {
+                Debug.LogWarning($"SceneDatabase: 種類 '{entry.Type}' にステージ一覧(StageDatabase)が指定されていません。", this);
+            }
+            else if (!isStageScene && entry.StageDatabase != null)
+            {
+                Debug.LogWarning($"SceneDatabase: 種類 '{entry.Type}' はステージを置かないシーンなので、ステージ一覧は使われません。", this);
+            }
+
             // シーンの未設定
             if (entry.SceneAsset == null)
             {

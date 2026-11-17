@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7a827a7a486de740a621d1176b30c59, type: 3}
-  m_Name: StageDatabase
+  m_Name: StageDatabase_Test1
   m_EditorClassIdentifier: Assembly-CSharp::StageDatabase
   playerParentPrefab: {fileID: 8806386904738557018, guid: 1054d0b3b6af99b46834bff36d608d5a, type: 3}
   stageDefinitions:
