@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7474723428126037395}
   - component: {fileID: 5445007044154486352}
+  - component: {fileID: 6185979546883680354}
   m_Layer: 6
   m_Name: CameraArea
   m_TagString: Untagged
@@ -109,6 +110,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 60, y: 16}
   m_EdgeRadius: 0
+--- !u!114 &6185979546883680354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231344857988602004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15baa22c2d10d3419645a80cbd7fb84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraAreaBounds
+  minX: -20
+  maxX: 40
+  minY: -6
+  maxY: 10
 --- !u!1 &1089451873976851918
 GameObject:
   m_ObjectHideFlags: 0
