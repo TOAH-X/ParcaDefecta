@@ -44,7 +44,8 @@ public class Gate : MonoBehaviour
     public void OnToggleGate(bool isOpen)
     {
         if (isOpen) activeSourceCount++;
-        else activeSourceCount--;
+        // 0 より下げない。固定値(Static)の false を送り続ける設定ミスでも、二度と開かなくなるのを防ぐ
+        else activeSourceCount = Mathf.Max(0, activeSourceCount - 1);
 
         // 1つでも「開けて」の指示があれば開ける
         isTargetOpen = activeSourceCount > 0;

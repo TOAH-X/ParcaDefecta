@@ -6,6 +6,8 @@ public class Switch : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private UnityEvent<bool> onToggle = new UnityEvent<bool>(); // スイッチの状態変化を通知するイベント
+    [SerializeField, Tooltip("オンにすると、一度 ON になったら誰もいなくなっても OFF に戻らない（扉なら開きっぱなし）")]
+    private bool stayOnOnceActivated = false;
 
     // 現在スイッチ内にいる「Player」タグを持つCollider2Dのリスト
     private List<Collider2D> occupants = new List<Collider2D>();
@@ -69,6 +71,9 @@ public class Switch : MonoBehaviour
     /// </summary>
     private void CheckSwitchState()
     {
+        // 永続設定のスイッチは、一度 ON になったらそのまま
+        if (stayOnOnceActivated && isSwitchOn) return;
+
         bool newSwitchState = occupants.Count > 0;
 
         if (newSwitchState != isSwitchOn)
