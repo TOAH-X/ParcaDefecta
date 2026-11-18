@@ -94112,7 +94112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1711954259623230109, guid: 4e88b0a7558c6f046bc5984cc487b0c5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 100
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1711954259623230109, guid: 4e88b0a7558c6f046bc5984cc487b0c5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -94153,6 +94153,10 @@ PrefabInstance:
     - target: {fileID: 3146448555903083120, guid: 4e88b0a7558c6f046bc5984cc487b0c5, type: 3}
       propertyPath: targetStageId
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4143797547582207539, guid: 4e88b0a7558c6f046bc5984cc487b0c5, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4143797547582207539, guid: 4e88b0a7558c6f046bc5984cc487b0c5, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
